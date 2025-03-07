@@ -46,15 +46,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         
-      - name: Build production image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          target: build
-          load: true
-          tags: portfolio-website:build
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Build production image for GitHub Pages
+        run: |
+          docker build --target=build \
+            --build-arg BUILD_COMMAND="npm run build:github" \
+            --build-arg STORYBOOK_BUILD_COMMAND="npm run build-storybook -- --ci" \
+            -t portfolio-website:build .
       
       - name: Extract build artifacts
         run: |
