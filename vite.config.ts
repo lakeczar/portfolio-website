@@ -7,15 +7,17 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig(({ mode }) => {
   
   const isGitHubPages = mode === 'github'
+  const base = isGitHubPages ? '/portfolio-website/' : '/'
   
   return {
     plugins: [
       react(),
       tailwindcss(),
     ],
-    base: isGitHubPages ? '/portfolio-website/' : '/',
+    base,
     build: {
       outDir: 'dist',
+      assetsInlineLimit: 4096,
     },
     server: {
       host: '0.0.0.0',
