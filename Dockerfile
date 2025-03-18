@@ -22,6 +22,7 @@ WORKDIR /app
 
 # Install serve for hosting static files
 RUN npm install -g serve
+RUN npx playwright install chromium --with-deps
 
 # Copy built assets
 COPY --from=build /app/dist /app/dist
