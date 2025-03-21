@@ -6,7 +6,15 @@ import { TestProviders } from './test-context-wrapper';
 
 // Mock TanStack Router
 vi.mock('@tanstack/react-router', () => ({
-  Link: ({ to, className, children }: { to: string; className?: string; children: React.ReactNode }) => (
+  Link: ({
+    to,
+    className,
+    children,
+  }: {
+    to: string;
+    className?: string;
+    children: React.ReactNode;
+  }) => (
     <a href={to} className={className}>
       {children}
     </a>

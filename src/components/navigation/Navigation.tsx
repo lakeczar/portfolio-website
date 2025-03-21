@@ -3,7 +3,7 @@ import ThemeToggle from '../theme-toggle/ThemeToggle';
 
 const Navigation = () => {
   return (
-    <nav className="bg-slate-100 p-4">
+    <nav className="p-4">
       <div className="container mx-auto flex items-center justify-between">
         <div className="text-xl font-bold">Alek Racz Portfolio</div>
         <div className="flex gap-4">

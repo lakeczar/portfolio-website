@@ -74,5 +74,4 @@ describe('ThemeToggle Component', () => {
     // Check if toggleTheme was called
     expect(toggleThemeMock).toHaveBeenCalledTimes(1);
   });
-
 });

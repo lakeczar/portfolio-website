@@ -1,13 +1,14 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
+import Hero from '../components/hero/hero';
 
 function Index() {
   return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
-    </div>
-  )
+    <>
+      <Hero />
+    </>
+  );
 }
 
 export const Route = createFileRoute('/')({
   component: Index,
-})
+});

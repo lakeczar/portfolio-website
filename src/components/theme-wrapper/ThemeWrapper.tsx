@@ -6,13 +6,7 @@ const ThemeWrapper = ({ children }: { children: ReactNode }) => {
   return (
     <>
       <div
-        className={`${themeContext?.color.background}`}
-        style={{
-          height: '100%',
-          width: '100%',
-          position: 'absolute',
-          top: 0,
-        }}
+        className={`${themeContext?.color.background} absolute top-0 h-full w-full`}
       >
         {children}
       </div>
