@@ -9,7 +9,7 @@ const ReactCompilerConfig = {/* ... */ };
 export default defineConfig(({ mode }) => {
   
   const isGitHubPages = mode === 'github'
-  const base = isGitHubPages ? '/portfolio-website/' : '/'
+  const base = isGitHubPages ? '/' : '/'
   
   return {
     plugins: [
