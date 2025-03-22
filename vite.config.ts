@@ -6,10 +6,7 @@ import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 const ReactCompilerConfig = {/* ... */ };
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
-  
-  const isGitHubPages = mode === 'github'
-  const base = isGitHubPages ? '/' : '/'
+export default defineConfig(() => {
   
   return {
     plugins: [
@@ -23,7 +20,7 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
-    base,
+    base: '/',
     build: {
       outDir: 'dist',
       assetsInlineLimit: 4096,
