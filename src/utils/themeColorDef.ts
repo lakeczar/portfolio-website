@@ -15,7 +15,7 @@ export const themeColors: ThemeColors = {
     primary: 'bg-blue-600',
     secondary: 'bg-purple-600',
     text: 'text-gray-100',
-    background: 'bg-slate-900', //Completed
+    background: 'bg-slate-950', //Completed
     card: 'bg-gray-800',
     border: 'border-gray-700',
     hover: 'hover:bg-blue-700',

@@ -13,7 +13,7 @@ export const Route = createRootRoute({
         <main>
           <Outlet />
         </main>
-        <footer className="bg-slate-100 dark:bg-slate-900">
+        <footer className="bg-slate-100 dark:bg-slate-950">
           <div className="p-4 text-center">
             &copy; {new Date().getFullYear()} Alek Racz Portfolio
           </div>
