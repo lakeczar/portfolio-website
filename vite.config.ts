@@ -10,7 +10,11 @@ export default defineConfig(() => {
   
   return {
     plugins: [
-      TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
+      TanStackRouterVite({ 
+        target: 'react', 
+        // Added code splitting to prevent delay in loading router component outlet
+        autoCodeSplitting: false 
+      }),
       tailwindcss(),
       react({
         babel: {
