@@ -5,7 +5,7 @@ const Navigation = () => {
   return (
     <nav className="p-4">
       <div className="container mx-auto flex items-center justify-between">
-        <div className="text-xl font-bold">Alek Racz Portfolio</div>
+        <ThemeToggle />
         <div className="flex gap-4">
           <Link to="/" className="hover:text-blue-600 [&.active]:font-bold">
             Home
@@ -24,7 +24,7 @@ const Navigation = () => {
           </Link>
         </div>
       </div>
-      <ThemeToggle />
+      
     </nav>
   );
 };
