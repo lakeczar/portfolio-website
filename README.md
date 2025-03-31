@@ -120,7 +120,7 @@ docker build --target=development -t portfolio-website:dev .
 docker run --rm portfolio-website:dev npm run lint
 
 # Test the production build with GitHub Pages arguments
-docker build --target=build --build-arg BUILD_COMMAND="npm run build:github" --build-arg STORYBOOK_BUILD_COMMAND="npm run build-storybook -- --ci" -t portfolio-website:build .
+docker build --target=build --build-arg BUILD_COMMAND="npm run build" --build-arg STORYBOOK_BUILD_COMMAND="npm run build-storybook" -t portfolio-website:build .
 
 # Create a temporary container and extract files
 docker create --name temp portfolio-website:build

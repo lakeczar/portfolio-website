@@ -25,3 +25,7 @@ storybook-static
 *.sw?
 
 *storybook.log
+
+# Docker temp Folders
+dist-test
+storybook-test
