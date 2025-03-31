@@ -103,7 +103,12 @@ docker-compose up frontend
 - 
 <h2 id="testing">:alembic: Testing</h2>
 
-<h3 id="unit-testing">Unit Testing</h3> 
+<h3 id="unit-testing">Unit Testing</h3>
+
+```bash
+# Run full unit test suite
+npm run test
+```
 
 <h3 id="docker-build-testing">Docker Build Testing</h3>
 
