@@ -4,19 +4,19 @@ A modern, responsive portfolio website built with React, TypeScript, and Tailwin
 
 <details><summary>Table of Contents</summary>
 
-* [🚀 Technologies](##🚀_Technologies)
-* [📋 Prerequisites](##📋_Prerequisites)
-* [🐳 Docker Setup](##🐳_Docker_Setup)
-* [📦 Build Information](##📦_Build_Information)
-* [🔄 Continuous Integration](##🔄_Continuous_Integration)
-* [🛠️ Installation & Setup](##🛠️_Installation_&_Setup)
-  * [Local Development](###Local_Development)
-  * [Docker Development Environment](###Docker_Development_Environment)
-* [📝 Available Scripts](##📝_Available_Scripts)
-* [Testing](##Testing)
-  * [Unit Testing](###Unit_Testing)
-  * [Docker Build Testing](###Docker_Build_Testing)
-* [📄 License](📄_License)
+* [🚀 Technologies](##_🚀_Technologies)
+* [📋 Prerequisites](##_📋_Prerequisites)
+* [🐳 Docker Setup](##_🐳_Docker_Setup)
+* [📦 Build Information](##_📦_Build_Information)
+* [🔄 Continuous Integration](##_🔄_Continuous_Integration)
+* [🛠️ Installation & Setup](##_🛠️_Installation_&_Setup)
+  * [Local Development](###_Local_Development)
+  * [Docker Development Environment](###_Docker_Development_Environment)
+* [📝 Available Scripts](##_📝_Available_Scripts)
+* [Testing](##_Testing)
+  * [Unit Testing](###_Unit_Testing)
+  * [Docker Build Testing](###_Docker_Build_Testing)
+* [📄 License](##_📄_License)
 
 </details>
 
