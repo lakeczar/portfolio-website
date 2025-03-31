@@ -1,45 +1,9 @@
 import { useState, useEffect } from "react"
 import { motion } from "motion/react"
-import BlurredLight from "./BlurLights"
+import BlurredLight from "../blur-lights/BlurLights"
 import alekRaczProfile from '../../assets/images/alekRaczProfile.jpg'
-
-const blurredLights = [
-  {
-    size: 300,
-    color: "bg-purple-500",
-    initialPosition: { top: "20%", left: "10%" },
-    animationDuration: 8,
-    animationDelay: 0
-  },
-  {
-    size: 400,
-    color: "bg-blue-500",
-    initialPosition: { top: "60%", left: "60%" },
-    animationDuration: 10,
-    animationDelay: 2
-  },
-  {
-    size: 250,
-    color: "bg-pink-500",
-    initialPosition: { top: "10%", left: "70%" },
-    animationDuration: 7,
-    animationDelay: 1
-  },
-  {
-    size: 350,
-    color: "bg-cyan-500",
-    initialPosition: { top: "70%", left: "20%" },
-    animationDuration: 9,
-    animationDelay: 3
-  },
-  {
-    size: 200,
-    color: "bg-emerald-500",
-    initialPosition: { top: "40%", left: "40%" },
-    animationDuration: 6,
-    animationDelay: 2.5
-  }
-];
+import { blurLights } from "../../utils/blurLightsConstants"
+import { BlurredLightsProps } from "../../types/BlurredLights"
 
 const Hero = () => {
   const [mounted, setMounted] = useState(false)
@@ -58,9 +22,9 @@ const Hero = () => {
               <h1 className="text-3xl font-bold tracking-tighter text-white sm:text-4xl md:text-5xl lg:text-6xl/none">
                 Alek Racz
               </h1>
-              <p className="max-w-[600px] text-gray-300 md:text-xl">
-                <span className="text-gray-300 text-sm mr-2">(Front-End Focused)</span>
+              <p className="max-w-[600px] text-gray-300 flex flex-col md:text-xl">
                 Full-Stack Software Engineer
+                <span className="text-gray-300 text-sm mr-2">(Front-End Focused)</span>
               </p>
             </div>
 
@@ -81,16 +45,16 @@ const Hero = () => {
   }
 
   return (
-    <section className="relative w-full overflow-hidden  min-h-[90vh] flex items-center justify-center px-24 dark:bg-slate-950">
-      {blurredLights.map((light, index) => {
+    <section className="relative w-full overflow-hidden  min-h-[90vh] flex items-center justify-center px-8 md:px-24 dark:bg-slate-950">
+      {blurLights.map(({size, color, initialPosition, animationDuration, animationDelay}: BlurredLightsProps, index: number) => {
         return (
             <BlurredLight
               key={index}
-              size={light.size}
-              color={light.color}
-              initialPosition={light.initialPosition}
-              animationDuration={light.animationDuration}
-              animationDelay={light.animationDelay}
+              size={size}
+              color={color}
+              initialPosition={initialPosition}
+              animationDuration={animationDuration}
+              animationDelay={animationDelay}
             />
         )
         })
@@ -104,25 +68,26 @@ const Hero = () => {
               className="text-3xl font-bold tracking-tighter text-white sm:text-4xl md:text-5xl lg:text-6xl/none"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 1 }}
             >
               Alek Racz
             </motion.h1>
             <motion.p
-              className="max-w-[600px] text-gray-300 flex flex-col-reverse lg:flex-row md:text-xl"
+              className="max-w-[600px] text-gray-300 flex flex-col md:text-xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 1, delay: 0.5 }}
             >
+
+              Full-Stack Software Engineer
               <motion.span
-                className="text-gray-300 text-sm mr-2 lg:self-center"
+                className="text-gray-300 text-sm mr-2"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 1 }}
               >
                 (Front-End Focused)
               </motion.span>
-              Full-Stack Software Engineer
             </motion.p>
           </div>
 
@@ -130,7 +95,7 @@ const Hero = () => {
             className="relative w-full md:w-[40%] aspect-square max-w-[450px] mx-auto md:mx-0"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ duration: 1 }}
           >
             <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-white/10">
               <img src={alekRaczProfile} alt="Alek Racz" className="object-cover w-full h-full text-center" style={{lineHeight: '400px'}} />
