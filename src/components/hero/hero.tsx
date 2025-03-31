@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react"
-import { motion } from "motion/react"
+import { motion } from "framer-motion"
 import alekRaczProfile from '../../assets/images/alekRaczProfile.jpg'
 import BlurLights from "../blur-lights/BlurLights"
 import { blurLights } from "../../utils/blurLightsConstants"
 import { BlurLightsProps } from "../../types/BlurLights.ts"
 
 
-const Hero = ({ testMounted }:{testMounted: boolean}) => {
+const Hero = ({ testMounted }:{testMounted?: boolean}) => {
   const [mounted, setMounted] = useState(testMounted !== undefined ? testMounted : false)
 
   useEffect(() => {
