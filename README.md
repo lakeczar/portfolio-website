@@ -6,17 +6,17 @@ A modern, responsive portfolio website built with React, TypeScript, and Tailwin
 
 * [🚀 Technologies](#-technologies)
 * [📋 Prerequisites](#-prerequisites)
-* [🐳 Docker Setup](#-Docker_Setup)
-* [📦 Build Information](#-Build_Information)
-* [🔄 Continuous Integration](#-Continuous_Integration)
-* [🛠️ Installation & Setup](#-Installation--Setup)
-  * [Local Development](#-Local-Development)
-  * [Docker Development Environment](#-Docker-Development-Environment)
-* [📝 Available Scripts](#-Available-Scripts)
-* [Testing](#-Testing)
-  * [Unit Testing](#-Unit-Testing)
-  * [Docker Build Testing](#-Docker-Build-Testing)
-* [📄 License](#-License)
+* [🐳 Docker Setup](#-docker-setup)
+* [📦 Build Information](#-build-information)
+* [🔄 Continuous Integration](#-continuous-integration)
+* [🛠️ Installation & Setup](#-installation--setup)
+  * [Local Development](#-local-development)
+  * [Docker Development Environment](#-docker-development-environment)
+* [📝 Available Scripts](#-available-scripts)
+* [Testing](#-testing)
+  * [Unit Testing](#-unit-testing)
+  * [Docker Build Testing](#-docker-build-testing)
+* [📄 License](#-license)
 
 </details>
 
