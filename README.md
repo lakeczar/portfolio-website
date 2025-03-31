@@ -10,12 +10,12 @@ A modern, responsive portfolio website built with React, TypeScript, and Tailwin
 * [📦 Build Information](#-build-information)
 * [🔄 Continuous Integration](#-continuous-integration)
 * [🛠️ Installation & Setup](#installation)
-  * [Local Development](#-local-development)
-  * [Docker Development Environment](#-docker-development-environment)
+  * [Local Development](#local-development)
+  * [Docker Development Environment](#docker-development-environment)
 * [📝 Available Scripts](#-available-scripts)
-* [Testing](#-testing)
-  * [Unit Testing](#-unit-testing)
-  * [Docker Build Testing](#-docker-build-testing)
+* [:alembic: Testing](#testing)
+  * [Unit Testing](#unit-testing)
+  * [Docker Build Testing](#docker-build-testing)
 * [📄 License](#-license)
 
 </details>
@@ -60,7 +60,7 @@ The project is set up with:
 
 <h2 id="installation"> 🛠️ Installation & Setup </h2>
 
-### Local Development
+<h3 id="local-development"> Local Development </h3>
 
 ```bash
 # Clone the repository
@@ -77,7 +77,7 @@ npm run dev
 npm run storybook
 ```
 
-### Docker Development Environment
+<h3 id="docker-development-environment">Docker Development Environment</h3> 
 
 ```bash
 # Start the development environment
@@ -101,11 +101,11 @@ docker-compose up frontend
 - `npm run test:coverage` - Run tests with coverage report
 - `npm run test:e2e` - Run end-to-end tests with Playwright
 - 
-## Testing
+<h2 id="testing">:alembic: Testing</h2>
 
-### Unit Testing
+<h3 id="unit-testing">Unit Testing</h3> 
 
-### Docker Build Testing
+<h3 id="docker-build-testing">Docker Build Testing</h3>
 
 ```bash
 # Test the development build
