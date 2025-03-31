@@ -20,6 +20,17 @@ A modern, responsive portfolio website built with React, TypeScript, and Tailwin
 
 </details>
 
+- [Technologies](#-technologies)
+- [Prerequisites](#-prerequisites)
+- [Installation & Setup](#️-installation--setup)
+- [Available Scripts](#-available-scripts)
+- [Docker Setup](#-docker-setup)
+- [Project Structure](#-project-structure)
+- [Build Information](#-build-information)
+- [Testing Strategy](#-testing-strategy)
+- [Continuous Integration](#-continuous-integration)
+- [License](#-license)
+
 ## 🚀 Technologies
 
 - **Frontend**: React 19, TypeScript, TailwindCSS 4
