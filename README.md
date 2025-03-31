@@ -58,7 +58,7 @@ The project is set up with:
 - Husky and lint-staged for pre-commit hooks
 - Storybook with Chromatic for visual testing
 
-## 🛠️ Installation & Setup {#installation}
+<h2 id="installation"> 🛠️ Installation & Setup </h2>
 
 ### Local Development
 
