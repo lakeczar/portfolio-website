@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import BlurredLight from "../blur-lights/BlurLights"
 import alekRaczProfile from '../../assets/images/alekRaczProfile.jpg'
 import { blurLights } from "../../utils/blurLightsConstants"
