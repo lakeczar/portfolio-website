@@ -9,7 +9,7 @@ A modern, responsive portfolio website built with React, TypeScript, and Tailwin
 * [🐳 Docker Setup](#-docker-setup)
 * [📦 Build Information](#-build-information)
 * [🔄 Continuous Integration](#-continuous-integration)
-* [🛠️ Installation & Setup](#-installation--setup)
+* [🛠️ Installation & Setup](#installation)
   * [Local Development](#-local-development)
   * [Docker Development Environment](#-docker-development-environment)
 * [📝 Available Scripts](#-available-scripts)
@@ -58,7 +58,7 @@ The project is set up with:
 - Husky and lint-staged for pre-commit hooks
 - Storybook with Chromatic for visual testing
 
-## 🛠️ Installation & Setup
+## 🛠️ Installation & Setup {#installation}
 
 ### Local Development
 
