@@ -1,4 +1,4 @@
-export interface BlurredLightsProps {
+export interface BlurLightsProps {
     size: number
     color: string
     initialPosition: { top: string; left: string }

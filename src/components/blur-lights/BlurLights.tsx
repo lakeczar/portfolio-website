@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react"
 import { motion } from "motion/react"
 
-import { BlurredLightsProps } from "../../types/BlurredLights.ts"
+import { BlurLightsProps } from "../../types/BlurLights.ts"
 
-const BlurredLight = ({
+const BlurLights = ({
   size,
   color,
   initialPosition,
   animationDuration,
   animationDelay,
-}: BlurredLightsProps) => {
+}: BlurLightsProps) => {
   const [position, setPosition] = useState(initialPosition)
 
   useEffect(() => {
@@ -52,4 +52,4 @@ const BlurredLight = ({
   )
 }
 
-export default BlurredLight;
+export default BlurLights;

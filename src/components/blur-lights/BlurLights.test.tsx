@@ -1,42 +1,6 @@
 import { render, screen, act } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest'
-import BlurredLight from './BlurLights'
-// import { BlurredLightsProps } from '../../types/BlurredLights'
-
-// Define a mock for motion/react
-// vi.mock('motion/react', () => ({
-//     motion: {
-//         div: ({ size = 200,
-//             color = 'bg-blue-500',
-//             initialPosition = { top: '20%', left: '30%' },
-//             animationDuration = 3,
-//             animationDelay = 1, // Keeping this for potential future use
-//             }: BlurredLightsProps) => (
-//             <div
-//                 data-testid="motion-div"
-//                 className={`absolute rounded-full blur-3xl opacity-0 ${color}`}
-//                 style={{
-//                     width: `${size}px`,
-//                     height: `${size}px`,
-//                     top: `${initialPosition.top}`,
-//                     left: `${initialPosition.left}`,
-//                 }}
-//                 data-animate={{
-//                     opacity: [0, 0.5, 0],
-//                 }}
-//                 data-transition={{
-//                     delay: animationDelay,
-//                     repeat: Number.POSITIVE_INFINITY,
-//                     ease: "easeInOut",
-//                   }}
-//             >
-//                 {/* Mock children or any other content here */}
-//                 <div>Mocked Content</div>
-//                 My Duration{animationDuration}
-//             </div>
-//         )
-//     }
-// }))
+import BlurLights from './BlurLights'
 
 describe('BlurLights Component', () => {
     // Setup and teardown
@@ -58,7 +22,7 @@ describe('BlurLights Component', () => {
             animationDelay: 1
         }
 
-        render(<BlurredLight {...props} />)
+        render(<BlurLights {...props} />)
 
         // Fix: change getByRole to getByTestId
         const element = screen.getByTestId('motion-div')
@@ -90,7 +54,7 @@ describe('BlurLights Component', () => {
             animationDelay: 1
         }
 
-        render(<BlurredLight {...props} />)
+        render(<BlurLights {...props} />)
 
         // Initial position
         let element = screen.getByTestId('motion-div')
@@ -133,7 +97,7 @@ describe('BlurLights Component', () => {
             animationDelay: 2
         }
 
-        const { unmount } = render(<BlurredLight {...props} />)
+        const { unmount } = render(<BlurLights {...props} />)
 
         unmount()
 
@@ -158,7 +122,7 @@ describe('BlurLights Component', () => {
             animationDelay: 0.5
         }
 
-        render(<BlurredLight {...props} />)
+        render(<BlurLights {...props} />)
 
         // Initial position
         let element = screen.getByTestId('motion-div')

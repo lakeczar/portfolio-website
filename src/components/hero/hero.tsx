@@ -1,21 +1,25 @@
 import { useState, useEffect } from "react"
 import { motion } from "motion/react"
-import BlurredLight from "../blur-lights/BlurLights"
 import alekRaczProfile from '../../assets/images/alekRaczProfile.jpg'
+import BlurLights from "../blur-lights/BlurLights"
 import { blurLights } from "../../utils/blurLightsConstants"
-import { BlurredLightsProps } from "../../types/BlurredLights"
+import { BlurLightsProps } from "../../types/BlurLights.ts"
 
-const Hero = () => {
-  const [mounted, setMounted] = useState(false)
+
+const Hero = ({ testMounted }:{testMounted: boolean}) => {
+  const [mounted, setMounted] = useState(testMounted !== undefined ? testMounted : false)
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    // Only set mounted to true if we're not in test mode
+    if (testMounted === undefined) {
+      setMounted(true);
+    }
+  }, [testMounted]);
 
   // Only render animations on client side to avoid hydration issues
   if (!mounted) {
     return (
-      <section className="relative w-full overflow-hidden bg-black min-h-[90vh] flex items-center justify-center">
+      <section className="relative w-full overflow-hidden  min-h-[90vh] flex items-center justify-center px-8 md:px-24 dark:bg-slate-950" data-testid="hero-section-unmounted" >
         <div className="container px-4 md:px-6 relative z-10">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
             <div className="flex flex-col space-y-4 text-left md:max-w-[50%]">
@@ -45,10 +49,10 @@ const Hero = () => {
   }
 
   return (
-    <section className="relative w-full overflow-hidden  min-h-[90vh] flex items-center justify-center px-8 md:px-24 dark:bg-slate-950">
-      {blurLights.map(({size, color, initialPosition, animationDuration, animationDelay}: BlurredLightsProps, index: number) => {
+    <section className="relative w-full overflow-hidden  min-h-[90vh] flex items-center justify-center px-8 md:px-24 dark:bg-slate-950" data-testid="hero-section-mounted">
+      {blurLights.map(({size, color, initialPosition, animationDuration, animationDelay}: BlurLightsProps, index: number) => {
         return (
-            <BlurredLight
+            <BlurLights
               key={index}
               size={size}
               color={color}
