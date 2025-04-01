@@ -18,10 +18,12 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@headlessui/react": "^2.2.0",
     "@radix-ui/themes": "^3.2.1",
     "@tailwindcss/vite": "^4.0.14",
     "@tanstack/react-router": "^1.112.13",
+    "gsap": "^3.12.7",
     "motion": "^12.6.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
