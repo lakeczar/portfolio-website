@@ -49,7 +49,7 @@ jobs:
       - name: Build production image for GitHub Pages
         run: |
           docker build --target=build \
-            --build-arg BUILD_COMMAND="npm run build:github" \
+            --build-arg BUILD_COMMAND="npm run build" \
             --build-arg STORYBOOK_BUILD_COMMAND="npm run build-storybook" \
             -t portfolio-website:build .
       
@@ -61,6 +61,13 @@ jobs:
           docker cp temp:/app/dist/. ./dist/
           docker cp temp:/app/storybook-static/. ./storybook-static/
           docker rm temp
+      
+      - name: List contents for debugging
+        run: |
+          echo "Contents of dist directory:"
+          ls -la ./dist
+          echo "Contents of dist/assets directory (if exists):"
+          ls -la ./dist/assets || echo "Assets directory not found"
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
