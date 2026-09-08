@@ -14,7 +14,7 @@ For workflow conflicts, authority descends from this `AGENTS.md`, to the authori
 
 ## Task ownership
 
-Use one task, branch, and worktree. This redesign belongs to `feat/forest-depth-redesign` in its existing worktree. Do not edit the separate dirty `main` checkout.
+Use one task, branch, and worktree. The original redesign is released; subsequent work uses the branch recorded in `docs/TASK.md` within the assigned worktree. Do not edit the separate dirty `main` checkout.
 
 Before starting another task, inspect active worktrees, task records, and open pull requests for behavioral or shared-resource overlap. A worktree does not isolate port 5173, browser sessions, package caches, credentials, or deployments.
 

@@ -176,6 +176,7 @@ export default function initialize(state, on) {
     return t * t * (3 - 2 * t);
   };
   let disposed = false;
+  let lastPlaybackState = '';
   let method = 'lively',
     requested = true,
     visible = true,
@@ -259,7 +260,7 @@ export default function initialize(state, on) {
   function restHint() {
     initialHint = false;
     clearTimeout(hintTimer);
-    hint.classList.remove('shown');
+    if (hint.classList.contains('shown')) hint.classList.remove('shown');
     if (progress < hintEnd) hintTimer = setTimeout(revealHint, 3200);
   }
   function layoutScene() {
@@ -333,10 +334,26 @@ export default function initialize(state, on) {
   function sync() {
     if (disposed) return;
     const run = active();
-    root.dataset.running = String(run && method === 'css');
-    root.dataset.reduced = String(reducedMotion());
-    if (!visible || document.hidden || progress >= hintEnd)
+    const reducedState = reducedMotion();
+    if (
+      (!visible || document.hidden || progress >= hintEnd) &&
+      hint.classList.contains('shown')
+    )
       hint.classList.remove('shown');
+    // Scroll position changes do not usually change playback. Avoid notifying
+    // the hand's observers and restarting hidden media on every scroll frame.
+    const playbackState = [
+      run,
+      reducedState,
+      method,
+      requested,
+      still.checked,
+      naturalWater.available,
+    ].join('|');
+    if (playbackState === lastPlaybackState) return;
+    lastPlaybackState = playbackState;
+    root.dataset.running = String(run && method === 'css');
+    root.dataset.reduced = String(reducedState);
     naturalWater.update(
       run,
       (method === 'natural' || method === 'lively') &&

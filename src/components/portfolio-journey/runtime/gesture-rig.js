@@ -49,9 +49,9 @@ export default function initialize(state, on) {
       if (reduced || !active) {
         clearTimeout(timer);
         phase = 'idle';
-        video.pause();
-        video.currentTime = 0;
-        video.style.opacity = '1';
+        if (!video.paused) video.pause();
+        if (video.currentTime !== 0) video.currentTime = 0;
+        if (video.style.opacity !== '1') video.style.opacity = '1';
         return;
       }
       if (scrub) {
