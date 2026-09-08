@@ -3,7 +3,13 @@ import initialize from './study.js';
 import profiles from './style-profiles.js';
 import markup from '../portfolio.html?raw';
 
-let cleanups, observerCallbacks, state, pending, water;
+let cleanups,
+  observerCallbacks,
+  state,
+  pending,
+  water,
+  resizeHandlers,
+  sceneWidth;
 const settle = async () => {
   for (let i = 0; i < 8; i++) await Promise.resolve();
 };
@@ -14,6 +20,11 @@ beforeEach(() => {
   cleanups = [];
   observerCallbacks = [];
   pending = new Map();
+  resizeHandlers = [];
+  sceneWidth = 1200;
+  vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+    () => new DOMRect(0, 0, sceneWidth, 900)
+  );
   vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(900);
   vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(3420);
   vi.stubGlobal('matchMedia', () => ({ matches: false }));
@@ -51,6 +62,7 @@ beforeEach(() => {
   profiles(state);
   initialize(state, (_target, type, handler) => {
     if (type === 'pagehide') cleanups.push(handler);
+    if (type === 'resize') resizeHandlers.push(handler);
   });
 });
 afterEach(() => {
@@ -62,6 +74,46 @@ afterEach(() => {
   document.body.replaceChildren();
 });
 describe('Portfolio runtime regressions', () => {
+  const resolve = async (name) => {
+    const src = '/portfolio-assets/' + name + '.webp';
+    pending.get(src).resolve({ src });
+    await settle();
+  };
+  const resize = (width) => {
+    sceneWidth = width;
+    resizeHandlers.forEach((fn) => fn());
+  };
+  const initialFrames = async () => {
+    await resolve('cel-spring');
+    await resolve('cel-desktop');
+  };
+  it('cancels an obsolete portrait request when resizing back to the committed desktop', async () => {
+    await initialFrames();
+    resize(390);
+    resize(1200);
+    await resolve('cel-portrait');
+    expect(document.getElementById('frame').getAttribute('src')).toBe(
+      '/portfolio-assets/cel-desktop.webp'
+    );
+  });
+  it('rechecks orientation after every forest decode during an atomic style switch', async () => {
+    await initialFrames();
+    state.portfolioJourney.setStyle('book');
+    resize(390);
+    await resolve('book-spring');
+    await resolve('book-earth');
+    await resolve('book-desktop');
+    expect(pending.has('/portfolio-assets/book-portrait.webp')).toBe(true);
+    resize(1200);
+    await resolve('book-portrait');
+    expect(document.getElementById('study').dataset.style).toBe('book');
+    expect(document.getElementById('frame').getAttribute('src')).toBe(
+      '/portfolio-assets/book-desktop.webp'
+    );
+    expect(document.getElementById('near-frame').getAttribute('src')).toBe(
+      '/portfolio-assets/book-desktop.webp'
+    );
+  });
   it('restores an in-flight forest when a new style is selected then cancelled', async () => {
     pending
       .get('/portfolio-assets/cel-spring.webp')

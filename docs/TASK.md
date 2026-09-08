@@ -13,7 +13,7 @@ Integrate the user-approved cel/evening standalone portfolio into the existing R
 - Branch/worktree: existing `feat/forest-depth-redesign` worktree
 - Base: `main`, initially `1134e86`
 - Risk: visual, browser lifecycle and deployment integration; no stored user data
-- PR: not yet created
+- PR: https://github.com/lakeczar/portfolio-website/pull/2 (base main)
 - Recovery: original dirty main checkout and standalone prototype remain untouched
 
 ## Acceptance criteria
@@ -35,11 +35,11 @@ No new framework, scroll library, backend, analytics, contact form, paid service
 
 Preflight (read-only independent agent): explicit `main` base matches ancestry, CI and Pages branch policy. Test-failure masking and missing static deep-link files identified; fixes are included. This is not the final candidate review.
 
-- App checks: 30 local tests passed, lint passed, production and Storybook builds passed. Local test count includes historical unstaged draft tests; CI will verify the exact committed tree.
-- Production browser checks: desktop and throttled phone scroll handoff, native text scrolling, keyboard footer access and reduced motion passed without runtime errors. Additional route/style lifecycle checks pending.
-- Fresh candidate review: pending
+- App checks: 34 local tests passed, lint passed, production and Storybook builds passed. Local test count includes five historical unstaged draft tests; CI verifies the exact committed tree.
+- Production browser checks: desktop and throttled phone scroll handoff, native text scrolling, keyboard footer access and reduced motion passed. Style loading, rapid selection, blocked-image retry, water pause/resume, static route entry and client-side route cleanup passed without runtime errors after correction.
+- Fresh candidate review: initial reviews requested fixes for cancelled frame loads, removed-DOM teardown, and responsive decode races. All have focused regression coverage; final correction verification is required before merge. Findings, reviewed SHAs and final disposition are recorded on PR #2.
 - Merge / deployment: pending
 
 ## Checkpoint
 
-The selected renderer has been connected to the React home route with scoped lifecycle cleanup and only optimized selected media. CI now propagates test failures and the production build emits direct-route files. Next: open the PR, complete fresh candidate review and route/style lifecycle checks, then merge only after passing CI and verify publication.
+The selected renderer has been connected to the React home route with scoped lifecycle cleanup and only optimized selected media. CI now propagates test failures and the production build emits direct-route files. PR #2 is open. Next: complete correction review and CI for the final candidate, then merge and verify publication at the existing custom domain. No merge has occurred at this checkpoint.

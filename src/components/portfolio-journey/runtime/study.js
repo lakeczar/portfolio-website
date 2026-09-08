@@ -52,8 +52,8 @@ export default function initialize(state, on) {
   root.dataset.earthReady = 'false';
   function updateFrames() {
     const src = portraitLayout ? profile.portrait : profile.desktop;
-    if (src === frameSource) return Promise.resolve();
     const request = ++frameRequest;
+    if (src === frameSource) return Promise.resolve();
     return loader
       .load(src)
       .then((image) => {
@@ -121,14 +121,22 @@ export default function initialize(state, on) {
         loader.load(candidate.earth),
         loader.load(portraitLayout ? candidate.portrait : candidate.desktop),
       ]);
-      const forest = await loader.load(
-        portraitLayout ? candidate.portrait : candidate.desktop
+      let forest, forestSource;
+      // A resize can happen during decode. Commit only the current orientation,
+      // and stop immediately when another style request replaces this one.
+      do {
+        if (token !== styleRequest) return;
+        forestSource = portraitLayout ? candidate.portrait : candidate.desktop;
+        forest = await loader.load(forestSource);
+        if (token !== styleRequest) return;
+      } while (
+        forestSource !==
+        (portraitLayout ? candidate.portrait : candidate.desktop)
       );
-      if (token !== styleRequest) return;
       profileId = next;
       profile = candidate;
       pendingId = null;
-      frameSource = portraitLayout ? candidate.portrait : candidate.desktop;
+      frameSource = forestSource;
       document.getElementById('spring').src = spring.src;
       document.getElementById('earth-image').src = earth.src;
       for (const id of ['frame', 'near-frame'])
