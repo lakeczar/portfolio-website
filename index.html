@@ -1,24 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Your portfolio website description" />
-    <meta name="keywords" content="portfolio, web development, projects, Alek Racz, Racz, Software Engineer, Web Developer" />
+    <meta
+      name="description"
+      content="Alek Racz is a senior full-stack software engineer with a frontend focus, building thoughtful interfaces, reusable systems, and AI-assisted development tools."
+    />
+    <meta
+      name="keywords"
+      content="portfolio, web development, projects, Alek Racz, Racz, Software Engineer, Web Developer"
+    />
     <meta name="author" content="Alek Racz" />
-    
+
     <!-- Open Graph / Social Media -->
     <meta property="og:title" content="Alek Racz - Portfolio" />
-    <meta property="og:description" content="A portfolio website to show off previous experience in work and projects as well as current experience of this site" />
+    <meta
+      property="og:description"
+      content="A portfolio website to show off previous experience in work and projects as well as current experience of this site"
+    />
     <meta property="og:type" content="website" />
     <!-- <meta property="og:url" content="https://yourdomain.com" />
     <meta property="og:image" content="https://yourdomain.com/preview-image.jpg" /> -->
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <!-- <link rel="icon" type="image/png" href="/favicon.png" /> -->
-    
+
     <title>Alek Racz - Portfolio</title>
+    <script>
+      // Begin only the selected hero before the React bundle loads.
+      if (location.pathname === '/') {
+        const requested = new URLSearchParams(location.search).get('style');
+        const hour = new Date().getHours();
+        const style = ['cel', 'evening', 'current', 'book'].includes(requested)
+          ? requested
+          : hour >= 17 || hour < 6
+            ? 'evening'
+            : 'cel';
+        const hero = document.createElement('link');
+        hero.rel = 'preload';
+        hero.as = 'image';
+        hero.fetchPriority = 'high';
+        hero.href = '/portfolio-assets/' + style + '-spring.webp';
+        document.head.append(hero);
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

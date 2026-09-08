@@ -1,25 +1,27 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import {
+  createRootRoute,
+  Outlet,
+  useRouterState,
+} from '@tanstack/react-router';
 import Navigation from '../components/navigation/Navigation';
-import ThemeWrapper from '../components/theme-wrapper/ThemeWrapper';
 
-export const Route = createRootRoute({
-  component: () => (
+function RootLayout() {
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
+  if (pathname === '/') return <Outlet />;
+  return (
     <>
-      <header className="absolute z-10 w-full">
+      <header className="site-header">
         <Navigation />
       </header>
-      <ThemeWrapper>
-        <main>
-          <Outlet />
-        </main>
-        <footer className="bg-slate-100 dark:bg-slate-950">
-          <div className="p-4 text-center">
-            &copy; {new Date().getFullYear()} Alek Racz Portfolio
-          </div>
-        </footer>
-      </ThemeWrapper>
-      <TanStackRouterDevtools position="bottom-right" />
+      <main>
+        <Outlet />
+      </main>
+      <footer className="site-footer">
+        <p>&copy; {new Date().getFullYear()} Alek Racz Portfolio</p>
+      </footer>
     </>
-  ),
-});
+  );
+}
+export const Route = createRootRoute({ component: RootLayout });

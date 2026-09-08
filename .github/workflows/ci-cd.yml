@@ -32,9 +32,8 @@ jobs:
       - name: Run type checking in Docker
         run: docker run --rm portfolio-website:development npx tsc --noEmit
       
-      # This would run your tests in Docker once you add the test script
       - name: Run tests in Docker
-        run: docker run --rm portfolio-website:development npm test || echo "Tests not yet configured"
+        run: docker run --rm portfolio-website:development npm test
 
   build:
     name: Build for Deployment
