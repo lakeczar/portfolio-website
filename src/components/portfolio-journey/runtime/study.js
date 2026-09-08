@@ -53,7 +53,6 @@ export default function initialize(state, on) {
   function updateFrames() {
     const src = portraitLayout ? profile.portrait : profile.desktop;
     if (src === frameSource) return Promise.resolve();
-    frameSource = src;
     const request = ++frameRequest;
     return loader
       .load(src)
@@ -61,6 +60,8 @@ export default function initialize(state, on) {
         if (request !== frameRequest) return;
         for (const id of ['frame', 'near-frame'])
           document.getElementById(id).src = image.src;
+        // Cache only a committed frame, never a request that can be invalidated.
+        frameSource = src;
         root.dataset.forestReady = 'true';
         render(progress);
       })
@@ -322,6 +323,7 @@ export default function initialize(state, on) {
     );
   }
   function sync() {
+    if (disposed) return;
     const run = active();
     root.dataset.running = String(run && method === 'css');
     root.dataset.reduced = String(reducedMotion());
@@ -527,7 +529,6 @@ export default function initialize(state, on) {
   surfaceObserver.observe(root.querySelector('.surface'));
   on(globalThis, 'pagehide', () => {
     requested = false;
-    sync();
     disposed = true;
     ++frameRequest;
     profileId = '';

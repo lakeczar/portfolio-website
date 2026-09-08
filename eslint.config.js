@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import reactCompiler from 'eslint-plugin-react-compiler'
 
 export default tseslint.config(
-  { ignores: ['dist'] },
+  { ignores: ['dist', 'storybook-static'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
