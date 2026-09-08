@@ -74,6 +74,24 @@ afterEach(() => {
   document.body.replaceChildren();
 });
 describe('Portfolio runtime regressions', () => {
+  it('does not repeat playback updates when visibility and motion state are unchanged', () => {
+    water.update.mockClear();
+    for (let i = 0; i < 20; i++)
+      observerCallbacks.forEach((fn) =>
+        fn([
+          {
+            isIntersecting: true,
+            intersectionRect: { width: 1200, height: 900 },
+          },
+        ])
+      );
+    expect(water.update).not.toHaveBeenCalled();
+    observerCallbacks[0]([
+      { isIntersecting: false, intersectionRect: { width: 0, height: 0 } },
+    ]);
+    expect(water.update).toHaveBeenCalledTimes(1);
+    expect(water.update.mock.calls[0][0]).toBe(false);
+  });
   const resolve = async (name) => {
     const src = '/portfolio-assets/' + name + '.webp';
     pending.get(src).resolve({ src });

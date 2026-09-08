@@ -1,16 +1,8 @@
 // Approved portfolio renderer; lifecycle is owned by the React route.
 export default function initialize(state, on) {
   state.styleProfiles = {
-    current: {
-      label: 'Current cinematic',
-      spring: '/portfolio-assets/current-spring.webp',
-      earth: '/portfolio-assets/current-earth.webp',
-      desktop: '/portfolio-assets/current-desktop.webp',
-      portrait: '/portfolio-assets/current-portrait.webp',
-      thumb: '/portfolio-assets/current-thumb.webp',
-    },
     cel: {
-      label: 'Clean cel shading',
+      label: 'Daylight (cel)',
       spring: '/portfolio-assets/cel-spring.webp',
       earth: '/portfolio-assets/cel-earth.webp',
       desktop: '/portfolio-assets/cel-desktop.webp',
@@ -18,15 +10,23 @@ export default function initialize(state, on) {
       thumb: '/portfolio-assets/cel-thumb.webp',
     },
     evening: {
-      label: 'Evening cel shading',
+      label: 'Evening (cel)',
       spring: '/portfolio-assets/evening-spring.webp',
       earth: '/portfolio-assets/evening-earth.webp',
       desktop: '/portfolio-assets/evening-desktop.webp',
       portrait: '/portfolio-assets/evening-portrait.webp',
       thumb: '/portfolio-assets/evening-thumb.webp',
     },
+    current: {
+      label: 'Cinematic study',
+      spring: '/portfolio-assets/current-spring.webp',
+      earth: '/portfolio-assets/current-earth.webp',
+      desktop: '/portfolio-assets/current-desktop.webp',
+      portrait: '/portfolio-assets/current-portrait.webp',
+      thumb: '/portfolio-assets/current-thumb.webp',
+    },
     book: {
-      label: 'Storybook adventure',
+      label: 'Storybook study',
       spring: '/portfolio-assets/book-spring.webp',
       earth: '/portfolio-assets/book-earth.webp',
       desktop: '/portfolio-assets/book-desktop.webp',
