@@ -1,30 +1,22 @@
 import { Link } from '@tanstack/react-router';
-import ThemeToggle from '../theme-toggle/ThemeToggle';
 
 const Navigation = () => {
   return (
-    <nav className="p-4">
-      <div className="container mx-auto flex items-center justify-between">
-        <ThemeToggle />
-        <div className="flex gap-4">
-          <Link to="/" className="hover:text-blue-600 [&.active]:font-bold">
-            Home
-          </Link>
-          <Link
-            to="/about"
-            className="hover:text-blue-600 [&.active]:font-bold"
-          >
-            About
-          </Link>
-          <Link
-            to="/timeline"
-            className="hover:text-blue-600 [&.active]:font-bold"
-          >
-            Timeline
-          </Link>
-        </div>
+    <nav className="site-navigation" aria-label="Primary navigation">
+      <Link to="/" className="site-wordmark" aria-label="Alek Racz home">
+        Alek Racz
+      </Link>
+      <div className="site-navigation-links">
+        <Link to="/" className="site-navigation-link">
+          Home
+        </Link>
+        <Link to="/about" className="site-navigation-link">
+          About
+        </Link>
+        <Link to="/timeline" className="site-navigation-link">
+          Timeline
+        </Link>
       </div>
-      
     </nav>
   );
 };

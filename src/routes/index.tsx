@@ -1,12 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
-import Hero from '../components/hero/Hero';
+import PortfolioJourney from '../components/portfolio-journey/PortfolioJourney';
 
 function Index() {
-  return (
-    <>
-      <Hero />
-    </>
-  );
+  return <PortfolioJourney />;
 }
 
 export const Route = createFileRoute('/')({

@@ -1,0 +1,212 @@
+<div id="artwork-status" role="status" aria-live="polite" hidden>
+  <span id="artwork-message"></span
+  ><button id="artwork-retry" type="button" hidden>Retry</button>
+</div>
+<main id="study" data-method="lively" data-running="false">
+  <a class="skip-journey" href="#portfolio-content">Skip to portfolio</a>
+  <section
+    class="journey"
+    id="journey"
+    aria-label="Continuous spring to earth journey"
+  >
+    <div class="pin">
+      <div class="view-wrap">
+        <div
+          id="scene"
+          class="scene"
+          role="img"
+          aria-label="Close forest waterfall pool, deepening forest frame, detailed earth cutaway, leading to the portfolio introduction"
+        >
+          <div id="world" class="world">
+            <div class="surface">
+              <div class="vista" id="vista">
+                <div class="artboard">
+                  <img
+                    id="spring"
+                    decoding="async"
+                    width="1672"
+                    height="941"
+                    alt=""
+                    fetchpriority="high"
+                  />
+                  <div class="water css-water" aria-hidden="true">
+                    <div class="fall-mask">
+                      <div class="fall-strokes"></div>
+                      <div class="fall-strokes alternate"></div>
+                    </div>
+                    <div class="pond-mask" id="css-pond"></div>
+                    <div class="foam"></div>
+                  </div>
+                  <svg
+                    class="water svg-water"
+                    id="water-svg"
+                    viewBox="0 0 1672 941"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                  >
+                    <defs>
+                      <clipPath id="pond-clip">
+                        <path
+                          d="M416 643 L650 629 L825 627 L1040 638 L1210 653 L1190 715 L1100 752 L943 767 L852 784 L724 774 L655 753 L560 747 L527 708 L453 676Z"
+                        />
+                      </clipPath>
+                      <clipPath id="fall-clip">
+                        <path
+                          d="M776 447 L925 451 L933 610 L898 626 L774 617Z"
+                        />
+                      </clipPath>
+                    </defs>
+                    <g id="svg-ripples" clip-path="url(#pond-clip)"></g>
+                    <g id="svg-fall" clip-path="url(#fall-clip)"></g>
+                  </svg>
+                  <canvas
+                    class="water canvas-water"
+                    id="water-canvas"
+                    width="960"
+                    height="205"
+                    aria-hidden="true"
+                  ></canvas>
+                  <canvas
+                    class="water natural-water"
+                    id="natural-water"
+                    aria-hidden="true"
+                  ></canvas>
+                </div>
+              </div>
+              <img
+                id="frame"
+                class="frame mid-frame"
+                decoding="async"
+                alt=""
+                width="1672"
+                height="940"
+              />
+              <img
+                id="near-frame"
+                class="frame near-frame"
+                decoding="async"
+                alt=""
+                width="1672"
+                height="940"
+              />
+            </div>
+            <div class="forest-earth-bridge" aria-hidden="true"></div>
+            <div class="underground" id="underground">
+              <img
+                id="earth-image"
+                decoding="async"
+                alt=""
+                width="1672"
+                height="941"
+              />
+              <div class="earth-foot"></div>
+            </div>
+          </div>
+          <a
+            id="scroll-hint"
+            class="scroll-hint"
+            href="#portfolio-content"
+            aria-label="Scroll to explore, or skip to portfolio"
+          >
+            <span class="gesture-touch"
+              ><img
+                src="/portfolio-assets/scroll-hand-selected.png"
+                alt=""
+                width="1280"
+                height="1280" /><i class="swipe-wash"></i
+            ></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="portfolio-content" class="portfolio-content">
+    <p class="explore-heading">There’s more beneath the surface.</p>
+    <div class="about-layout">
+      <img
+        class="about-portrait"
+        src="/portfolio-assets/alek-racz.jpg"
+        alt="Alek Racz"
+        width="1216"
+        height="1582"
+        loading="lazy"
+        decoding="async"
+      />
+      <div class="about-copy">
+        <p class="eyebrow">Alek Racz</p>
+        <h1>From the first idea<br />to the finer details.</h1>
+        <p>
+          I’m a senior full-stack software engineer with a frontend focus. I
+          help shape products, turn complex requirements into clear interfaces,
+          and build reusable systems that other engineers can build on.
+        </p>
+        <p>
+          I enjoy working through the whole process with a team: exploring a
+          direction, weighing the tradeoffs, and carrying it through to
+          production. Outside of work, I build web projects, experiment with
+          AI-assisted development, and run a self-hosted infrastructure lab.
+        </p>
+      </div>
+    </div>
+    <details class="study-settings">
+      <summary>Prototype controls</summary>
+      <div class="controls">
+        <fieldset class="methods">
+          <legend>Water movement</legend>
+          <button type="button" data-method="natural" aria-pressed="false">
+            Natural flow</button
+          ><button type="button" data-method="lively" aria-pressed="true">
+            Livelier flow</button
+          ><button type="button" data-method="css" aria-pressed="false">
+            Previous lines
+          </button>
+        </fieldset>
+        <div class="actions">
+          <button id="play" type="button" aria-pressed="false">
+            Play water</button
+          ><label class="still-label"
+            ><input id="still" type="checkbox" />Still</label
+          ><label class="still-label"
+            ><input id="narrow" type="checkbox" />Phone crop</label
+          ><label class="still-label"
+            ><input id="reduce" type="checkbox" />Reduced motion</label
+          >
+        </div>
+      </div>
+      <div class="transport">
+        <label for="depth">Journey <output id="depth-value">0%</output></label
+        ><input type="range" id="depth" min="0" max="100" step=".1" value="0" />
+        <div class="stops">
+          <button type="button" data-stop="0">Spring</button
+          ><button type="button" data-stop="35">Deep forest</button
+          ><button type="button" data-stop="100">Underground</button>
+        </div>
+      </div>
+      <p id="status" class="status" aria-live="polite">Livelier flow.</p>
+    </details>
+    <footer class="portfolio-footer">
+      <a
+        class="footer-social"
+        href="https://www.linkedin.com/in/alek-racz/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Alek Racz on LinkedIn (opens in a new tab)"
+        ><svg
+          viewBox="0 0 24 24"
+          width="22"
+          height="22"
+          fill="currentColor"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.049c.476-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+          /></svg
+        ><span>LinkedIn</span></a
+      >
+      <p class="legal-copy">
+        &copy; <span data-copyright-year></span> Alek Racz Portfolio
+      </p>
+    </footer>
+  </section>
+</main>
