@@ -60,9 +60,10 @@ beforeEach(() => {
     },
   };
   profiles(state);
-  initialize(state, (_target, type, handler) => {
+  initialize(state, (target, type, handler) => {
     if (type === 'pagehide') cleanups.push(handler);
     if (type === 'resize') resizeHandlers.push(handler);
+    if (type === 'click') target.addEventListener('click', handler);
   });
 });
 afterEach(() => {
@@ -151,6 +152,40 @@ describe('Portfolio runtime regressions', () => {
     expect(document.getElementById('near-frame').getAttribute('src')).toBe(
       '/portfolio-assets/cel-desktop.webp'
     );
+  });
+  it('shows the scroll cue as soon as the spring is painted', async () => {
+    const hint = document.getElementById('scroll-hint');
+    expect(hint.classList.contains('shown')).toBe(false);
+    await resolve('cel-spring');
+    expect(hint.classList.contains('shown')).toBe(true);
+  });
+  it('still shows the scroll cue after one second when artwork is slow', () => {
+    const hint = document.getElementById('scroll-hint');
+    vi.advanceTimersByTime(999);
+    expect(hint.classList.contains('shown')).toBe(false);
+    vi.advanceTimersByTime(1);
+    expect(hint.classList.contains('shown')).toBe(true);
+  });
+  it('travels to chapters with native smooth scrolling unless motion is reduced', () => {
+    const scrollTo = vi.fn();
+    vi.stubGlobal('scrollTo', scrollTo);
+    const intro = document.querySelector('.about-layout');
+    intro.scrollIntoView = vi.fn();
+    const chapter = (name) =>
+      [...document.querySelectorAll('#chapters button')].find(
+        (b) => b.textContent.trim() === name
+      );
+    chapter('Forest').click();
+    expect(scrollTo).toHaveBeenLastCalledWith(
+      expect.objectContaining({ behavior: 'smooth' })
+    );
+    chapter('About').click();
+    expect(intro.scrollIntoView).toHaveBeenLastCalledWith({
+      behavior: 'smooth',
+    });
+    document.getElementById('reduce').checked = true;
+    chapter('Spring').click();
+    expect(scrollTo).toHaveBeenLastCalledWith({ top: 0, behavior: 'instant' });
   });
   it('releases renderers after React has removed the DOM and ignores queued observers', () => {
     document.body.replaceChildren();

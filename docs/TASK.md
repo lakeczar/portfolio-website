@@ -1,8 +1,23 @@
-# Scroll smoothness and art-style labels
+# Scroll feel, first load, chapters, SEO and cleanup
 
-## Current task (2026-09-08)
+## Current task (2026-10-05)
 
-- Status: Review; claimed by the current Codex task after verifying no overlapping open PRs.
+- Status: Review; requested directly by the project owner, who asked for the commit and PR on 2026-10-05. PR targets `main`.
+- Branch: `feat/scroll-feel-and-studio-tabs`, based on `main` at `970af7f`.
+- Objective: (1) make scroll-driven motion consistent through the spring → forest → underground transitions; (2) show the scroll cue sooner on load; (3) keep the developer studio heading and tabs visible while its pane scrolls. Follow-up the same day: share/SEO metadata, faster first paint, journey chapter markers, removal of dead code and unused dependencies.
+- Changes: pacing extracted to `runtime/journey-pace.js` (log-space zoom, forest speed curve that matches the descent's cruise speed, descent enters at cruise speed with the approved total length preserved); journey height sized against the pinned scene; touch-device resizes from browser bars no longer re-pace mid-scroll; cue revealed when the spring is painted (1 s fallback) and first play no longer waits for the fade; studio panes scroll inside `.studio-body`.
+- Evidence: headless Chrome sweep, motion per scrolled pixel (1.0 = native). Desktop 1280×800: peak 1.54 → 1.00, minimum at the forest seam 0.06 → 0.37, low-motion distance 104 px → 0. Phone 390×844: peak 1.76 → 1.11, seam 0.09 → 0.39. Journey length unchanged (2730 / 2702 px); 0 % and 35 % framing pixel-identical in screenshots. Cue shown at ~270 ms vs ~1130 ms (local dev). 38 tests, lint, app build and Storybook build pass.
+- Follow-up changes: favicon set, share image (`public/og-image.jpg`, crop of cel spring), Open Graph/Twitter tags, canonical URLs rewritten per route by `scripts/pages-routes.mjs`, JSON-LD Person, robots.txt and sitemap. Blurred thumbnail placeholder from `index.html` (before the bundle) and under the artboard (until the spring element decodes). Chapter markers (Spring / Forest / Underground / About) with native smooth scrolling, instant under reduced motion. Removed master-era Hero, BlurLights, theme system and their tests, plus 11 unused packages (lockfile: 105 packages removed, none added or upgraded).
+- Follow-up evidence: throttled phone (1.6 Mbps, 150 ms, 4× CPU) first contentful paint ~1.6 s → ~0.42 s with the scene visible (blurred) instead of blank; sharp art unchanged at ~3.2 s. No brightness dip at the placeholder handoff. Chapter clicks land on 35 % / 100 % / introduction / 0 % on desktop and phone, with and without reduced motion. 25 tests (13 belonged to deleted components), lint, type-check, app build, Storybook build, and `/`, `/about/`, `/timeline/` static loads pass.
+- Open decision: AVIF hero images would cut ~34 % (q60, 38 dB PSNR vs shipped WebP) but re-encode approved art; not applied.
+- Not verified: physical trackpad/touch feel; iOS address-bar behaviour (reasoned, not device-tested); hand video playback in headless Chromium (no H.264).
+- Declined: a time-of-day particle layer (fireflies, pollen, petals) was mocked in the browser only; the owner judged it not embedded in the scene. Not committed. A painted Night art set remains the suggested route for more moods.
+- Checkpoint: all changes committed on the branch; 25 tests, lint, type-check, app build and Storybook build pass on the committed tree.
+- Next action: owner reviews the PR. Merge and deployment are not approved.
+
+## Previous task (2026-09-08, merged as PR #3)
+
+- Status: Done (merged as PR #3); claimed by the current Codex task after verifying no overlapping open PRs.
 - Branch: `fix/portfolio-scroll-compositing`, based on released `main` at `002ab745` in the existing assigned worktree.
 - Objective: clarify that cel day/evening are the main artwork and improve spring-to-forest rendering smoothness without changing the approved scroll distances or adding input inertia.
 - Acceptance: test all four styles; preserve shared pacing, style IDs/URLs, automatic time selection, accessibility and offscreen/reduced-motion behavior; run focused regressions and required app checks.

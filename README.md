@@ -24,10 +24,7 @@ A modern, responsive portfolio website built with React, TypeScript, and Tailwin
 
 - **Frontend**: React 19, TypeScript, TailwindCSS 4
 - **Routing**: TanStack Router
-- **State Management**: Zustand
-- **UI Components**: Headless UI, Radix UI Themes
-- **Form Handling**: React Hook Form with Zod validation
-- **Animations**: Motion
+- **Animations**: Plain DOM, CSS and canvas (no animation library); see `src/components/portfolio-journey/`
 - **Development**: Vite, ESLint, Prettier
 - **Testing**: Vitest, Testing Library, Playwright
 - **Component Development**: Storybook

@@ -207,6 +207,28 @@ a {
   display: block;
   object-fit: fill;
 }
+/* Blurred thumbnail over the not-yet-decoded spring, then fades to reveal it. */
+.artboard::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: var(--placeholder, none) center / 100% 100% no-repeat;
+  filter: blur(12px);
+  pointer-events: none;
+  transition:
+    opacity 0.5s ease-out,
+    visibility 0.5s;
+}
+[data-spring-ready='true'] .artboard::before {
+  opacity: 0;
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .artboard::before {
+    transition: none;
+  }
+}
 .scene.phone .artboard {
   width: auto;
   left: 50%;
@@ -1233,6 +1255,17 @@ body,
   width: min(400px, calc(100vw - 40px));
   max-height: calc(100svh - 104px);
   padding: 16px;
+  /* Heading and tabs stay put; only the selected pane scrolls. */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.studio-body {
+  flex: 0 1 auto;
+  min-height: 0;
+  /* Room for focus outlines, which the scroll box would otherwise clip. */
+  margin: 0 -8px;
+  padding: 0 8px 6px;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -1266,6 +1299,14 @@ body,
   border: 0;
   border-radius: 30px;
   margin-bottom: 16px;
+  flex-shrink: 0;
+}
+.panel-heading {
+  flex-shrink: 0;
+}
+/* The scroll box stops this margin collapsing into the tabs' gap. */
+.studio-body > section > h2:first-child {
+  margin-top: 0;
 }
 .studio-tabs button {
   flex: 1;
@@ -1520,4 +1561,114 @@ html {
   margin: 2rem 0 0;
   color: #abb6a3;
   font-size: 0.85rem;
+}
+
+/* Journey chapters: a quiet position marker that also jumps between stops. */
+.chapters {
+  position: fixed;
+  z-index: 60;
+  top: 50%;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  transform: translateY(-50%);
+}
+.chapters button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 36px;
+  height: 30px;
+  padding: 0 8px 0 0;
+  border: 0;
+  border-radius: 15px;
+  background: none;
+  color: #f8f9fc;
+}
+.chapters button:hover {
+  background: none;
+}
+.chapters button::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  border: 1.5px solid #f8f9fcd9;
+  box-shadow:
+    0 0 0 1px #02071240,
+    0 1px 5px #02071299;
+  transition:
+    height 0.3s ease,
+    background 0.3s ease;
+}
+.chapters button[aria-current='step']::after {
+  height: 20px;
+  background: #f8f9fc;
+}
+.chapters span {
+  position: absolute;
+  right: 30px;
+  padding: 4px 10px;
+  border: 1px solid #ffffff5c;
+  border-radius: 12px;
+  background: #172634a8;
+  backdrop-filter: blur(16px) saturate(115%);
+  -webkit-backdrop-filter: blur(16px) saturate(115%);
+  font:
+    13px/1.3 system-ui,
+    sans-serif;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(4px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+  pointer-events: none;
+}
+.chapters button:focus-visible span,
+.chapters[data-scrolling] button[aria-current='step'] span {
+  opacity: 1;
+  transform: none;
+}
+/* Touch browsers keep :hover on the last tapped dot; label on real hover only. */
+@media (hover: hover) {
+  .chapters button:hover span {
+    opacity: 1;
+    transform: none;
+  }
+}
+.chapters button:focus-visible {
+  outline: none;
+}
+.chapters button:focus-visible::after {
+  outline: 2px solid #f0d88b;
+  outline-offset: 3px;
+}
+.about-layout {
+  scroll-margin-top: 12svh;
+}
+@media (max-width: 760px) {
+  .chapters {
+    right: 4px;
+  }
+  .chapters button {
+    width: 30px;
+    height: 34px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chapters button::after,
+  .chapters span {
+    transition: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .chapters span {
+    background: #101d29;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }

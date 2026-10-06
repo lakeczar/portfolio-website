@@ -30,9 +30,11 @@ The deployment builds both the app and Storybook. Production build also writes P
 ## Behavior to preserve
 
 - Day cel shading from 6 AM to 5 PM in the visitor's local clock; evening otherwise. Studio selections are temporary URL overrides.
-- Existing spring-to-forest framing. A slower, steady descent with gradual handoff to normal page scrolling. No wheel/touch interception or artificial inertia.
+- Existing spring-to-forest framing. Forest zoom is paced in log space so it responds on the first scroll and hands off to a steady descent at matching speed (no stall at the forest), then eases into normal page scrolling. No wheel/touch interception or artificial inertia. Pacing math lives in `runtime/journey-pace.js`.
 - Water moves while actually visible and pauses offscreen, when the tab is hidden, or for reduced motion.
-- Selected hand clip: 1.75x playback, 0.4-second fades, 0.05-second final hold, 1.5-second hidden rest, full opacity, responsive size, initial one-second delay.
+- Selected hand clip: 1.75x playback, 0.4-second fades, 0.05-second final hold, 1.5-second hidden rest, full opacity, responsive size. First cue appears as soon as the spring art is painted (one-second fallback) and starts playing while it fades in.
+- First load shows the selected style's blurred thumbnail (from `index.html`, then under the artboard) until the spring element has decoded.
+- Chapter markers (Spring / Forest / Underground / About) mark position and travel with native smooth scrolling; instant under reduced motion.
 - Atomic art swaps: keep current scene until every required replacement is decoded; retain it on failure and offer Retry.
 - Half-screen spacing around “There’s more beneath the surface.”; portrait left on wide screens and above text on phones.
 - Preserve identity, routes, legal footer and accessibility. No forms, analytics, credentials or remote inference.
