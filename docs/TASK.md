@@ -2,7 +2,8 @@
 
 ## Current task (2026-10-05)
 
-- Status: Review; requested directly by the project owner, who asked for the commit and PR on 2026-10-05. PR targets `main`.
+- Status: Review; requested directly by the project owner, who asked for the commit and PR on 2026-10-05.
+- PR: https://github.com/lakeczar/portfolio-website/pull/4 (base main)
 - Branch: `feat/scroll-feel-and-studio-tabs`, based on `main` at `970af7f`.
 - Objective: (1) make scroll-driven motion consistent through the spring → forest → underground transitions; (2) show the scroll cue sooner on load; (3) keep the developer studio heading and tabs visible while its pane scrolls. Follow-up the same day: share/SEO metadata, faster first paint, journey chapter markers, removal of dead code and unused dependencies.
 - Changes: pacing extracted to `runtime/journey-pace.js` (log-space zoom, forest speed curve that matches the descent's cruise speed, descent enters at cruise speed with the approved total length preserved); journey height sized against the pinned scene; touch-device resizes from browser bars no longer re-pace mid-scroll; cue revealed when the spring is painted (1 s fallback) and first play no longer waits for the fade; studio panes scroll inside `.studio-body`.
