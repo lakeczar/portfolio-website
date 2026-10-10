@@ -13,7 +13,8 @@
 - Open decision: AVIF hero images would cut ~34 % (q60, 38 dB PSNR vs shipped WebP) but re-encode approved art; not applied.
 - Not verified: physical trackpad/touch feel; iOS address-bar behaviour (reasoned, not device-tested); hand video playback in headless Chromium (no H.264).
 - Declined: a time-of-day particle layer (fireflies, pollen, petals) was mocked in the browser only; the owner judged it not embedded in the scene. Not committed. A painted Night art set remains the suggested route for more moods.
-- Checkpoint: all changes committed on the branch; 25 tests, lint, type-check, app build and Storybook build pass on the committed tree.
+- PR review (2026-10-10): Codex review of the PR found three issues, all fixed with regression tests in `50d1c56` and `9df3955`: a style switch failing during the first load left the current artwork unfinished; reduced motion showed the spring for the Forest chapter; the CSS minimum height left a dead scroll stretch on short viewports. A directed re-review of the fixes came back clean.
+- Checkpoint: all changes committed on the branch; 28 tests, lint, type-check, app build and Storybook build pass on the committed tree.
 - Next action: owner reviews the PR. Merge and deployment are not approved.
 
 ## Previous task (2026-09-08, merged as PR #3)
