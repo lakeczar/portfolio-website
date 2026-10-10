@@ -179,9 +179,14 @@ describe('Portfolio runtime regressions', () => {
     expect(document.getElementById('spring').getAttribute('src')).toBe(
       '/portfolio-assets/cel-spring.webp'
     );
-    // The failed switch stays visible with its retry.
+    // The failed switch stays visible with its retry, even after the
+    // background underground load completes.
+    vi.advanceTimersByTime(600);
+    await resolve('cel-earth');
+    expect(study.dataset.earthReady).toBe('true');
     expect(notice.hidden).toBe(false);
     expect(notice.dataset.error).toBe('true');
+    expect(document.getElementById('artwork-retry').hidden).toBe(false);
   });
   it('cuts to the closed forest at the Forest chapter when motion is reduced', () => {
     vi.stubGlobal('scrollTo', vi.fn());

@@ -85,7 +85,12 @@ export default function initialize(state, on) {
         if (profileId !== id) return;
         document.getElementById('earth-image').src = image.src;
         root.dataset.earthReady = 'true';
-        if (!pendingId) loaded();
+        // Clear only its own notice, never another failure's Retry.
+        if (
+          !pendingId &&
+          (notice.dataset.error !== 'true' || retryAction === ensureEarth)
+        )
+          loaded();
         render(progress);
       })
       .catch(() => {
