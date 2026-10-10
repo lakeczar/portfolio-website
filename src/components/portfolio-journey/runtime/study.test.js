@@ -215,6 +215,15 @@ describe('Portfolio runtime regressions', () => {
     await resolve('cel-spring');
     expect(hint.classList.contains('shown')).toBe(true);
   });
+  it('shows the scroll cue when a style switch replaces the first load', async () => {
+    const hint = document.getElementById('scroll-hint');
+    state.portfolioJourney.setStyle('book');
+    await resolve('book-spring');
+    await resolve('book-earth');
+    await resolve('book-desktop');
+    expect(document.getElementById('study').dataset.style).toBe('book');
+    expect(hint.classList.contains('shown')).toBe(true);
+  });
   it('still shows the scroll cue after one second when artwork is slow', () => {
     const hint = document.getElementById('scroll-hint');
     vi.advanceTimersByTime(999);

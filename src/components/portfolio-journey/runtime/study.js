@@ -164,6 +164,8 @@ export default function initialize(state, on) {
       root.dataset.style = profileId;
       loaded();
       render(progress);
+      // A switch can replace the first load, so it cues scrolling too.
+      introduceHint();
       document.dispatchEvent(new Event('portfolio-style-change'));
     } catch {
       if (token === styleRequest) {
