@@ -9,7 +9,8 @@ let cleanups,
   pending,
   water,
   resizeHandlers,
-  sceneWidth;
+  sceneWidth,
+  journeyTop;
 const settle = async () => {
   for (let i = 0; i < 8; i++) await Promise.resolve();
 };
@@ -22,8 +23,16 @@ beforeEach(() => {
   pending = new Map();
   resizeHandlers = [];
   sceneWidth = 1200;
+  journeyTop = 0;
   vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
-    () => new DOMRect(0, 0, sceneWidth, 900)
+    function () {
+      return new DOMRect(
+        0,
+        this.id === 'journey' ? journeyTop : 0,
+        sceneWidth,
+        900
+      );
+    }
   );
   vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(900);
   vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(3420);
@@ -49,11 +58,12 @@ beforeEach(() => {
     portfolioArtLoader: {
       load(src) {
         if (!pending.has(src)) {
-          let resolve;
-          const promise = new Promise((done) => {
+          let resolve, reject;
+          const promise = new Promise((done, fail) => {
             resolve = done;
+            reject = fail;
           });
-          pending.set(src, { promise, resolve });
+          pending.set(src, { promise, resolve, reject });
         }
         return pending.get(src).promise;
       },
@@ -152,6 +162,47 @@ describe('Portfolio runtime regressions', () => {
     expect(document.getElementById('near-frame').getAttribute('src')).toBe(
       '/portfolio-assets/cel-desktop.webp'
     );
+  });
+  it('finishes the first artwork when a style switch made during it fails', async () => {
+    state.portfolioJourney.setStyle('book');
+    pending
+      .get('/portfolio-assets/book-spring.webp')
+      .reject(new Error('offline'));
+    await settle();
+    const notice = document.getElementById('artwork-status');
+    expect(notice.dataset.error).toBe('true');
+    await initialFrames();
+    const study = document.getElementById('study');
+    expect(study.dataset.style).toBe('cel');
+    expect(study.dataset.springReady).toBe('true');
+    expect(study.dataset.forestReady).toBe('true');
+    expect(document.getElementById('spring').getAttribute('src')).toBe(
+      '/portfolio-assets/cel-spring.webp'
+    );
+    // The failed switch stays visible with its retry.
+    expect(notice.hidden).toBe(false);
+    expect(notice.dataset.error).toBe('true');
+  });
+  it('cuts to the closed forest at the Forest chapter when motion is reduced', () => {
+    vi.stubGlobal('scrollTo', vi.fn());
+    const chapter = (name) =>
+      [...document.querySelectorAll('#chapters button')].find(
+        (b) => b.textContent.trim() === name
+      );
+    const frame = document.getElementById('frame');
+    document.getElementById('reduce').checked = true;
+    journeyTop = -800;
+    chapter('Forest').click();
+    const forest = frame.style.transform;
+    journeyTop = 0;
+    chapter('Spring').click();
+    expect(frame.style.transform).toBe('scale(4)');
+    expect(forest).not.toBe(frame.style.transform);
+  });
+  it('lets the computed descent, not the CSS minimum, end the journey', () => {
+    const journey = document.getElementById('journey');
+    expect(journey.style.minHeight).toBe('0');
+    expect(journey.style.height).toMatch(/px$/);
   });
   it('shows the scroll cue as soon as the spring is painted', async () => {
     const hint = document.getElementById('scroll-hint');

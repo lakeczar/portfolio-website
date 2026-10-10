@@ -96,9 +96,10 @@ export default function initialize(state, on) {
       });
     return earthRequest;
   }
-  async function startArtwork() {
+  // Quiet restarts keep a failed style switch's notice and retry on screen.
+  async function startArtwork(quiet = false) {
     const token = ++styleRequest;
-    loading('Loading the spring…');
+    if (!quiet) loading('Loading the spring…');
     try {
       const image = await loader.load(profile.spring, 'high');
       if (token !== styleRequest) return;
@@ -108,7 +109,7 @@ export default function initialize(state, on) {
       await spring.decode?.().catch(() => {});
       if (token !== styleRequest) return;
       root.dataset.springReady = 'true';
-      loaded();
+      if (!quiet) loaded();
       // Cue scrolling as soon as there is a scene to scroll through.
       introduceHint();
       await updateFrames();
@@ -163,6 +164,9 @@ export default function initialize(state, on) {
       if (token === styleRequest) {
         pendingId = null;
         failed(() => switchArtwork(next));
+        // The switch invalidated any unfinished load of the current style.
+        if (root.dataset.springReady !== 'true') startArtwork(true);
+        else updateFrames().catch(() => {});
       }
     }
   }
@@ -190,6 +194,8 @@ export default function initialize(state, on) {
     progress = 0;
   const hint = document.getElementById('scroll-hint');
   const coarse = matchMedia('(any-pointer: coarse)');
+  // Chapter dots and reduced motion treat the forest as arriving here.
+  const forestChapter = 0.25;
   const forestEnd = 0.35,
     descentStart = forestEnd,
     bridgeHeight = 0.1,
@@ -219,7 +225,7 @@ export default function initialize(state, on) {
     return baseTravel * forestEnd + (lo + hi) / 2;
   }
   function layoutPace() {
-    journey.style.height = '';
+    journey.style.height = journey.style.minHeight = '';
     baseTravel = Math.max(1, journey.offsetHeight - innerHeight);
     const near = scales.near[portraitLayout ? 'tall' : 'wide'];
     pace = descentPace({
@@ -234,6 +240,8 @@ export default function initialize(state, on) {
     // release lines up with the end of the descent when mobile bars are hidden.
     journey.style.height =
       scene.clientHeight + baseTravel * forestEnd + pace.distance + 'px';
+    // The CSS minimum only sizes the measurement above; the descent sets the end.
+    journey.style.minHeight = '0';
   }
   const hintEnd = 0.85;
   let hintTimer = 0,
@@ -397,14 +405,16 @@ export default function initialize(state, on) {
     )
       loading('Loading the underground…');
     const staticMode = reducedMotion();
+    // Reduced motion cuts from the spring to the closed forest instead of zooming.
+    const closed = progress >= forestChapter;
     document.getElementById('vista').style.transform = staticMode
       ? 'none'
       : `scale(${zoom(scales.vista, enclosure)})`;
     document.getElementById('frame').style.transform = staticMode
-      ? 'scale(4)'
+      ? `scale(${closed ? scales.frame[crop][1] : 4})`
       : `scale(${zoom(scales.frame[crop], enclosure)})`;
     document.getElementById('near-frame').style.transform = staticMode
-      ? 'scale(8)'
+      ? `scale(${closed ? scales.near[crop][1] : 8})`
       : `scale(${zoom(scales.near[crop], enclosure)}) translateX(${-enclosure * 2}%)`;
     document.getElementById('world').style.transform =
       `translateY(${-descent * 100}%)`;
@@ -421,7 +431,7 @@ export default function initialize(state, on) {
     // introduction fills the view.
     const next = aboutReached
       ? 3
-      : progress < 0.25
+      : progress < forestChapter
         ? 0
         : progress < (1 + forestEnd) / 2
           ? 1
