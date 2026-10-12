@@ -74,6 +74,9 @@ export default function initialize(state, on) {
         throw error;
       });
   }
+  // Settle only its own notice, never another failure's Retry.
+  const ownsNotice = () =>
+    notice.dataset.error !== 'true' || retryAction === ensureEarth;
   function ensureEarth() {
     if (root.dataset.earthReady === 'true') return Promise.resolve();
     if (earthRequest) return earthRequest;
@@ -85,16 +88,12 @@ export default function initialize(state, on) {
         if (profileId !== id) return;
         document.getElementById('earth-image').src = image.src;
         root.dataset.earthReady = 'true';
-        // Clear only its own notice, never another failure's Retry.
-        if (
-          !pendingId &&
-          (notice.dataset.error !== 'true' || retryAction === ensureEarth)
-        )
-          loaded();
+        if (!pendingId && ownsNotice()) loaded();
         render(progress);
       })
       .catch(() => {
-        if (profileId === id) failed(ensureEarth);
+        // Scrolling retries the underground, so a shown failure keeps its Retry.
+        if (profileId === id && ownsNotice()) failed(ensureEarth);
       })
       .finally(() => {
         earthRequest = null;

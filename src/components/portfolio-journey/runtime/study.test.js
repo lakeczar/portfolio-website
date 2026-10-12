@@ -197,6 +197,26 @@ describe('Portfolio runtime regressions', () => {
     expect(notice.dataset.error).toBe('true');
     expect(document.getElementById('artwork-retry').hidden).toBe(false);
   });
+  it("keeps a failed style switch's Retry when the underground then fails too", async () => {
+    state.portfolioJourney.setStyle('book');
+    pending
+      .get('/portfolio-assets/book-spring.webp')
+      .reject(new Error('offline'));
+    await settle();
+    await initialFrames();
+    vi.advanceTimersByTime(600);
+    pending
+      .get('/portfolio-assets/cel-earth.webp')
+      .reject(new Error('offline'));
+    await settle();
+    const notice = document.getElementById('artwork-status');
+    expect(notice.dataset.error).toBe('true');
+    // Retry still repeats the style switch, not the underground load.
+    document.getElementById('artwork-retry').click();
+    expect(document.getElementById('artwork-message').textContent).toBe(
+      'Loading ' + state.styleProfiles.book.label.toLowerCase() + '…'
+    );
+  });
   it('cuts to the closed forest at the Forest chapter when motion is reduced', () => {
     vi.stubGlobal('scrollTo', vi.fn());
     const chapter = (name) =>
