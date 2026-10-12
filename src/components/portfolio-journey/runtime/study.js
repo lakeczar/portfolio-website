@@ -429,13 +429,13 @@ export default function initialize(state, on) {
   }
   const chapterNav = document.getElementById('chapters'),
     chapters = [...chapterNav.querySelectorAll('[data-chapter]')],
-    content = document.getElementById('portfolio-content');
+    aboutContent = root.querySelector('.about-layout');
   let chapterIndex = 0,
     chapterTimer = 0;
   function markChapter(aboutReached) {
     // Spring until the trees visibly close in (they arrive late in the zoom),
     // Forest until halfway down the descent, then Underground until the
-    // introduction fills the view.
+    // introduction's content reaches the middle of the view.
     const next = aboutReached
       ? 3
       : progress < forestChapter
@@ -451,7 +451,8 @@ export default function initialize(state, on) {
   function scrollProgress() {
     const distance = -journey.getBoundingClientRect().top,
       split = baseTravel * forestEnd,
-      aboutReached = content.getBoundingClientRect().top < innerHeight / 2;
+      // The section's padding sits above the content, so follow the content.
+      aboutReached = aboutContent.getBoundingClientRect().top < innerHeight / 2;
     render(
       distance <= split
         ? distance / baseTravel
@@ -471,7 +472,7 @@ export default function initialize(state, on) {
     on(button, 'click', () => {
       const behavior = reducedMotion() ? 'instant' : 'smooth';
       if (button.dataset.chapter === 'about')
-        root.querySelector('.about-layout').scrollIntoView({ behavior });
+        aboutContent.scrollIntoView({ behavior });
       else seek(Number(button.dataset.chapter), behavior);
     })
   );
@@ -569,18 +570,23 @@ export default function initialize(state, on) {
     { passive: true }
   );
   let paceWidth = innerWidth,
-    paceHeight = innerHeight;
+    paceHeight = innerHeight,
+    paceSceneHeight = scene.clientHeight;
   on(globalThis, 'resize', () => {
     layoutScene();
     // Mobile browser bars change only the height while scrolling. Re-pacing
     // then would jump the scene under the finger, so keep the current pace.
+    // The pinned scene is 100svh, which the bars leave alone, so a scene
+    // height change is a real resize.
     const barsOnly =
       coarse.matches &&
       innerWidth === paceWidth &&
-      Math.abs(innerHeight - paceHeight) < 160;
+      Math.abs(innerHeight - paceHeight) < 160 &&
+      scene.clientHeight === paceSceneHeight;
     if (!barsOnly) {
       paceWidth = innerWidth;
       paceHeight = innerHeight;
+      paceSceneHeight = scene.clientHeight;
       layoutPace();
     }
     naturalWater.resize();

@@ -10,7 +10,10 @@ let cleanups,
   water,
   resizeHandlers,
   sceneWidth,
-  journeyTop;
+  sceneHeight,
+  journeyTop,
+  aboutTop,
+  media;
 const settle = async () => {
   for (let i = 0; i < 8; i++) await Promise.resolve();
 };
@@ -23,20 +26,26 @@ beforeEach(() => {
   pending = new Map();
   resizeHandlers = [];
   sceneWidth = 1200;
+  sceneHeight = 900;
   journeyTop = 0;
+  aboutTop = 0;
+  media = {};
   vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
     function () {
-      return new DOMRect(
-        0,
-        this.id === 'journey' ? journeyTop : 0,
-        sceneWidth,
-        900
-      );
+      const top =
+        this.id === 'journey'
+          ? journeyTop
+          : this.classList.contains('about-layout')
+            ? aboutTop
+            : 0;
+      return new DOMRect(0, top, sceneWidth, sceneHeight);
     }
   );
-  vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(900);
+  vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(
+    () => sceneHeight
+  );
   vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(3420);
-  vi.stubGlobal('matchMedia', () => ({ matches: false }));
+  vi.stubGlobal('matchMedia', (query) => (media[query] ??= { matches: false }));
   vi.stubGlobal(
     'IntersectionObserver',
     class {
@@ -208,6 +217,44 @@ describe('Portfolio runtime regressions', () => {
     const journey = document.getElementById('journey');
     expect(journey.style.minHeight).toBe('0');
     expect(journey.style.height).toMatch(/px$/);
+  });
+  it('keeps the pace when touch browser bars move and re-paces a real resize under 160px', () => {
+    const journey = document.getElementById('journey');
+    const frame = document.getElementById('frame');
+    media['(any-pointer: coarse)'].matches = true;
+    journeyTop = -400;
+    resizeHandlers.forEach((fn) => fn());
+    const length = journey.style.height,
+      transform = frame.style.transform;
+    // The bars change the viewport, not the pinned 100svh scene.
+    vi.stubGlobal('innerHeight', innerHeight - 84);
+    resizeHandlers.forEach((fn) => fn());
+    expect(journey.style.height).toBe(length);
+    expect(frame.style.transform).toBe(transform);
+    // A real resize changes the scene too.
+    sceneHeight = 816;
+    resizeHandlers.forEach((fn) => fn());
+    const touchLength = journey.style.height;
+    expect(touchLength).not.toBe(length);
+    media['(any-pointer: coarse)'].matches = false;
+    resizeHandlers.forEach((fn) => fn());
+    expect(touchLength).toBe(journey.style.height);
+  });
+  it('marks About only once the About content reaches the middle of the view', () => {
+    vi.stubGlobal('innerHeight', 800);
+    journeyTop = -1e5;
+    const marked = () => {
+      resizeHandlers.forEach((fn) => fn());
+      return document
+        .querySelector('#chapters [aria-current]')
+        .textContent.trim();
+    };
+    aboutTop = 900;
+    expect(marked()).toBe('Underground');
+    aboutTop = 401;
+    expect(marked()).toBe('Underground');
+    aboutTop = 399;
+    expect(marked()).toBe('About');
   });
   it('shows the scroll cue as soon as the spring is painted', async () => {
     const hint = document.getElementById('scroll-hint');
