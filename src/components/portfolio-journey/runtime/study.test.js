@@ -217,6 +217,26 @@ describe('Portfolio runtime regressions', () => {
       'Loading ' + state.styleProfiles.book.label.toLowerCase() + '…'
     );
   });
+  it('offers Retry for an underground failure after an earlier failure was retried', async () => {
+    await initialFrames();
+    resize(390);
+    pending
+      .get('/portfolio-assets/cel-portrait.webp')
+      .reject(new Error('offline'));
+    await settle();
+    pending.delete('/portfolio-assets/cel-portrait.webp');
+    document.getElementById('artwork-retry').click();
+    await resolve('cel-portrait');
+    const notice = document.getElementById('artwork-status');
+    expect(notice.hidden).toBe(true);
+    vi.advanceTimersByTime(600);
+    pending
+      .get('/portfolio-assets/cel-earth.webp')
+      .reject(new Error('offline'));
+    await settle();
+    expect(notice.hidden).toBe(false);
+    expect(document.getElementById('artwork-retry').hidden).toBe(false);
+  });
   it('cuts to the closed forest at the Forest chapter when motion is reduced', () => {
     vi.stubGlobal('scrollTo', vi.fn());
     const chapter = (name) =>

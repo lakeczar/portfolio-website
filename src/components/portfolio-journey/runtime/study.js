@@ -76,7 +76,9 @@ export default function initialize(state, on) {
   }
   // Settle only its own notice, never another failure's Retry.
   const ownsNotice = () =>
-    notice.dataset.error !== 'true' || retryAction === ensureEarth;
+    notice.hidden ||
+    notice.dataset.error !== 'true' ||
+    retryAction === ensureEarth;
   function ensureEarth() {
     if (root.dataset.earthReady === 'true') return Promise.resolve();
     if (earthRequest) return earthRequest;
