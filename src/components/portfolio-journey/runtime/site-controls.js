@@ -17,10 +17,12 @@ export default function initialize(state, on) {
         <button id="tab-hand" role="tab" aria-selected="false" aria-controls="pane-hand" data-tab="hand" tabindex="-1">Animation</button>
         <button id="tab-art" role="tab" aria-selected="false" aria-controls="pane-art" data-tab="art" tabindex="-1">Art styles</button>
       </div>
+      <div class="studio-body" id="studio-body">
       <section id="pane-journey" role="tabpanel" aria-labelledby="tab-journey"><h2>Explore the scene</h2><div id="studio-journey-controls"></div></section>
       <section id="pane-hand" role="tabpanel" aria-labelledby="tab-hand" hidden><div class="studio-hand-preview"><div class="scroll-hint shown"><span class="gesture-touch"></span></div></div><div id="studio-hand-controls"></div><div class="studio-actions"><button id="hand-replay">Replay</button><button id="hand-reset">Reset</button></div><p class="studio-note">Live preview only. Reload to restore the selected settings.</p></section>
       <section id="pane-art" role="tabpanel" aria-labelledby="tab-art" hidden><h2>Choose the atmosphere</h2><div id="studio-art-options"></div><p class="studio-note" id="art-status" role="status">Cel shading selected.</p></section>
       <p class="studio-message" id="studio-message" role="status"></p>
+      </div>
     </aside>`;
   document.getElementById('study').append(shell);
   const menu = shell.querySelector('#site-menu'),
@@ -98,7 +100,7 @@ export default function initialize(state, on) {
       shell.querySelector('#pane-' + t.dataset.tab).hidden = !selected;
     });
     panel.dataset.tab = tab.dataset.tab;
-    panel.scrollTop = 0;
+    shell.querySelector('#studio-body').scrollTop = 0;
     if (tab.dataset.tab === 'hand') {
       const host = shell.querySelector('.gesture-touch');
       if (!host.querySelector('video')) state.mountPortfolioGesture(host);

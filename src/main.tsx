@@ -5,7 +5,6 @@ import './index.css';
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
-import { ThemeProvider } from './contexts/Theme/ThemeContext';
 
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -22,8 +21,6 @@ const rootElement = document.getElementById('root')!;
 const root = createRoot(rootElement);
 root.render(
   <StrictMode>
-    <ThemeProvider>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <RouterProvider router={router} />
   </StrictMode>
 );

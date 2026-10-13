@@ -12,22 +12,49 @@
       content="portfolio, web development, projects, Alek Racz, Racz, Software Engineer, Web Developer"
     />
     <meta name="author" content="Alek Racz" />
+    <meta name="theme-color" content="#0a100c" />
+    <!-- scripts/pages-routes.mjs rewrites these URLs for each retained route. -->
+    <link rel="canonical" href="https://alekracz.dev/" />
 
     <!-- Open Graph / Social Media -->
-    <meta property="og:title" content="Alek Racz - Portfolio" />
+    <meta property="og:site_name" content="Alek Racz" />
+    <meta
+      property="og:title"
+      content="Alek Racz — Senior Full-Stack Software Engineer"
+    />
     <meta
       property="og:description"
-      content="A portfolio website to show off previous experience in work and projects as well as current experience of this site"
+      content="Senior full-stack engineer with a frontend focus. Scroll from a hand-painted spring down through the forest and into the earth."
     />
     <meta property="og:type" content="website" />
-    <!-- <meta property="og:url" content="https://yourdomain.com" />
-    <meta property="og:image" content="https://yourdomain.com/preview-image.jpg" /> -->
+    <meta property="og:url" content="https://alekracz.dev/" />
+    <meta property="og:image" content="https://alekracz.dev/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="A cel-shaded waterfall pouring into a forest spring beneath snowy mountains"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <!-- <link rel="icon" type="image/png" href="/favicon.png" /> -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <title>Alek Racz - Portfolio</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Alek Racz",
+        "jobTitle": "Senior Full-Stack Software Engineer",
+        "url": "https://alekracz.dev/",
+        "image": "https://alekracz.dev/portfolio-assets/alek-racz.jpg",
+        "sameAs": ["https://www.linkedin.com/in/alek-racz/"]
+      }
+    </script>
+
+    <title>Alek Racz — Senior Full-Stack Software Engineer</title>
     <script>
       // Begin only the selected hero before the React bundle loads.
       if (location.pathname === '/') {
@@ -38,17 +65,37 @@
           : hour >= 17 || hour < 6
             ? 'evening'
             : 'cel';
-        const hero = document.createElement('link');
-        hero.rel = 'preload';
-        hero.as = 'image';
-        hero.fetchPriority = 'high';
-        hero.href = '/portfolio-assets/' + style + '-spring.webp';
-        document.head.append(hero);
+        // The 240px thumbnail arrives first and stands in, blurred, until the
+        // bundle mounts the scene and the full spring has decoded.
+        for (const name of ['thumb', 'spring']) {
+          const link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = 'image';
+          link.fetchPriority = 'high';
+          link.href = '/portfolio-assets/' + style + '-' + name + '.webp';
+          document.head.append(link);
+        }
+        document.documentElement.style.setProperty(
+          '--boot-art',
+          'url(/portfolio-assets/' + style + '-thumb.webp)'
+        );
       }
     </script>
+    <style>
+      /* Matches the scene's opening framing (vista scale and origin). */
+      .boot-scene {
+        position: fixed;
+        inset: 0;
+        background: var(--boot-art, none) center / cover no-repeat;
+        filter: blur(12px);
+        transform: scale(1.3);
+        transform-origin: 50% 68%;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- React replaces this placeholder when it renders. -->
+    <div id="root"><div class="boot-scene" aria-hidden="true"></div></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

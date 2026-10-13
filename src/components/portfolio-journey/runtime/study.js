@@ -1,3 +1,5 @@
+import { descentPace, forestCurve, zoom } from './journey-pace.js';
+
 // Approved portfolio renderer; lifecycle is owned by the React route.
 export default function initialize(state, on) {
   'use strict';
@@ -14,6 +16,8 @@ export default function initialize(state, on) {
     styleTimer = 0;
   root.dataset.style = profileId;
   root.dataset.styleMode = styleMode;
+  // Same thumbnail index.html preloads: a blurred stand-in until the spring decodes.
+  scene.style.setProperty('--placeholder', `url(${profile.thumb})`);
   let portraitLayout = false,
     frameSource = '',
     frameRequest = 0,
@@ -70,6 +74,11 @@ export default function initialize(state, on) {
         throw error;
       });
   }
+  // Settle only its own notice, never another failure's Retry.
+  const ownsNotice = () =>
+    notice.hidden ||
+    notice.dataset.error !== 'true' ||
+    retryAction === ensureEarth;
   function ensureEarth() {
     if (root.dataset.earthReady === 'true') return Promise.resolve();
     if (earthRequest) return earthRequest;
@@ -81,26 +90,34 @@ export default function initialize(state, on) {
         if (profileId !== id) return;
         document.getElementById('earth-image').src = image.src;
         root.dataset.earthReady = 'true';
-        if (!pendingId) loaded();
+        if (!pendingId && ownsNotice()) loaded();
         render(progress);
       })
       .catch(() => {
-        if (profileId === id) failed(ensureEarth);
+        // Scrolling retries the underground, so a shown failure keeps its Retry.
+        if (profileId === id && ownsNotice()) failed(ensureEarth);
       })
       .finally(() => {
         earthRequest = null;
       });
     return earthRequest;
   }
-  async function startArtwork() {
+  // Quiet restarts keep a failed style switch's notice and retry on screen.
+  async function startArtwork(quiet = false) {
     const token = ++styleRequest;
-    loading('Loading the spring…');
+    if (!quiet) loading('Loading the spring…');
     try {
       const image = await loader.load(profile.spring, 'high');
       if (token !== styleRequest) return;
-      document.getElementById('spring').src = image.src;
+      const spring = document.getElementById('spring');
+      spring.src = image.src;
+      // The element decodes separately; fade the placeholder only once it can paint.
+      await spring.decode?.().catch(() => {});
+      if (token !== styleRequest) return;
       root.dataset.springReady = 'true';
-      loaded();
+      if (!quiet) loaded();
+      // Cue scrolling as soon as there is a scene to scroll through.
+      introduceHint();
       await updateFrames();
       if (token !== styleRequest) return;
       earthTimer = setTimeout(ensureEarth, 600);
@@ -148,11 +165,16 @@ export default function initialize(state, on) {
       root.dataset.style = profileId;
       loaded();
       render(progress);
+      // A switch can replace the first load, so it cues scrolling too.
+      introduceHint();
       document.dispatchEvent(new Event('portfolio-style-change'));
     } catch {
       if (token === styleRequest) {
         pendingId = null;
         failed(() => switchArtwork(next));
+        // The switch invalidated any unfinished load of the current style.
+        if (root.dataset.springReady !== 'true') startArtwork(true);
+        else updateFrames().catch(() => {});
       }
     }
   }
@@ -171,10 +193,6 @@ export default function initialize(state, on) {
     canvas: 'Surface shimmer',
   };
   const clamp = (v) => Math.max(0, Math.min(1, v));
-  const ease = (v) => {
-    const t = clamp(v);
-    return t * t * (3 - 2 * t);
-  };
   let disposed = false;
   let lastPlaybackState = '';
   let method = 'lively',
@@ -184,69 +202,54 @@ export default function initialize(state, on) {
     progress = 0;
   const hint = document.getElementById('scroll-hint');
   const coarse = matchMedia('(any-pointer: coarse)');
+  // Chapter dots and reduced motion treat the forest as arriving here.
+  const forestChapter = 0.25;
   const forestEnd = 0.35,
     descentStart = forestEnd,
     bridgeHeight = 0.1,
     worldTravel = 1 + bridgeHeight;
   const tailPace = 1.6;
+  // Forest layer scales from the spring to the deep forest, wide and tall crops.
+  const scales = {
+    vista: [1.3, 1],
+    frame: { wide: [5, 1.14], tall: [4, 1] },
+    near: { wide: [8, 1.65], tall: [6, 1.15] },
+  };
+  // The first scroll visibly moves the forest (relative to its average speed).
+  const forestStartPace = 0.7;
   let baseTravel = 1,
-    descentDistance = 1,
-    descentPixels = 1,
-    cruiseSpeed = 1,
-    rampIn = 0,
-    rampOut = 0,
-    cruiseDistance = 0;
-  // Integral of smoothstep: smoothly change visual speed without capturing input,
-  // adding time-based inertia, or moving the content after scrolling stops.
-  const integratedEase = (t) => t * t * t * (1 - t / 2);
-  function descentAt(distance) {
-    let x = Math.max(0, Math.min(descentDistance, distance));
-    if (x < rampIn) return cruiseSpeed * rampIn * integratedEase(x / rampIn);
-    let pixels = (cruiseSpeed * rampIn) / 2;
-    x -= rampIn;
-    if (x < cruiseDistance) return pixels + cruiseSpeed * x;
-    pixels += cruiseSpeed * cruiseDistance;
-    x -= cruiseDistance;
-    return (
-      pixels +
-      cruiseSpeed * x +
-      (1 - cruiseSpeed) * rampOut * integratedEase(x / rampOut)
-    );
-  }
+    pace;
   function distanceAt(p) {
     if (p <= forestEnd) return baseTravel * p;
     // Inverse is only needed when seeking with the studio controls, not per frame.
-    const target = clamp((p - forestEnd) / (1 - forestEnd)) * descentPixels;
+    const target = clamp((p - forestEnd) / (1 - forestEnd)) * pace.pixels;
     let lo = 0,
-      hi = descentDistance;
+      hi = pace.distance;
     for (let i = 0; i < 24; i++) {
       const mid = (lo + hi) / 2;
-      if (descentAt(mid) < target) lo = mid;
+      if (pace.at(mid) < target) lo = mid;
       else hi = mid;
     }
     return baseTravel * forestEnd + (lo + hi) / 2;
   }
   function layoutPace() {
-    journey.style.height = '';
+    journey.style.height = journey.style.minHeight = '';
     baseTravel = Math.max(1, journey.offsetHeight - innerHeight);
-    const height = scene.clientHeight;
-    descentPixels = height * worldTravel;
-    // Retain the established middle-of-descent speed. Finish at native 1:1 speed
-    // so releasing the sticky scene into the dark content causes no speed jump.
-    cruiseSpeed = Math.max(
-      0.25,
-      Math.min(0.75, descentPixels / (baseTravel * 0.62 * tailPace))
-    );
-    rampIn = height * 0.3;
-    rampOut = height * 0.65;
-    cruiseDistance =
-      (descentPixels -
-        (cruiseSpeed * rampIn) / 2 -
-        ((cruiseSpeed + 1) * rampOut) / 2) /
-      cruiseSpeed;
-    descentDistance = rampIn + cruiseDistance + rampOut;
+    const near = scales.near[portraitLayout ? 'tall' : 'wide'];
+    pace = descentPace({
+      height: scene.clientHeight,
+      baseTravel,
+      forestEnd,
+      worldTravel,
+      tailPace,
+      nearZoom: Math.log(near[0] / near[1]),
+    });
+    // Size against the pinned scene (100svh), not innerHeight, so the sticky
+    // release lines up with the end of the descent when mobile bars are hidden.
     journey.style.height =
-      innerHeight + baseTravel * forestEnd + descentDistance + 'px';
+      scene.clientHeight + baseTravel * forestEnd + pace.distance + 'px';
+    // The CSS minimum only sizes the measurement above; the descent sets the end.
+    journey.style.minHeight = '0';
   }
   const hintEnd = 0.85;
   let hintTimer = 0,
@@ -256,6 +259,9 @@ export default function initialize(state, on) {
       'shown',
       visible && !document.hidden && progress < hintEnd
     );
+  }
+  function introduceHint() {
+    if (initialHint) revealHint();
   }
   function restHint() {
     initialHint = false;
@@ -388,8 +394,12 @@ export default function initialize(state, on) {
     progress = clamp(p);
     depth.value = (progress * 100).toFixed(1);
     output.value = Math.round(progress * 100) + '%';
-    const enclosure = ease(progress / forestEnd),
-      near = ease((progress - 0.04) / (forestEnd - 0.04));
+    const enclosure = forestCurve(
+      progress / forestEnd,
+      forestStartPace,
+      pace.forestEndPace
+    );
+    const crop = portraitLayout ? 'tall' : 'wide';
     if (progress > 0.12 && !pendingId) ensureEarth();
     const descent =
       root.dataset.earthReady === 'true'
@@ -403,37 +413,70 @@ export default function initialize(state, on) {
     )
       loading('Loading the underground…');
     const staticMode = reducedMotion();
+    // Reduced motion cuts from the spring to the closed forest instead of zooming.
+    const closed = progress >= forestChapter;
     document.getElementById('vista').style.transform = staticMode
       ? 'none'
-      : `scale(${1.3 - enclosure * 0.3})`;
+      : `scale(${zoom(scales.vista, enclosure)})`;
     document.getElementById('frame').style.transform = staticMode
-      ? 'scale(4)'
-      : `scale(${portraitLayout ? 4 - enclosure * 3 : 5 - enclosure * 3.86})`;
+      ? `scale(${closed ? scales.frame[crop][1] : 4})`
+      : `scale(${zoom(scales.frame[crop], enclosure)})`;
     document.getElementById('near-frame').style.transform = staticMode
-      ? 'scale(8)'
-      : `scale(${portraitLayout ? 6 - near * 4.85 : 8 - near * 6.35}) translateX(${-near * 2}%)`;
+      ? `scale(${closed ? scales.near[crop][1] : 8})`
+      : `scale(${zoom(scales.near[crop], enclosure)}) translateX(${-enclosure * 2}%)`;
     document.getElementById('world').style.transform =
       `translateY(${-descent * 100}%)`;
     sync();
   }
+  const chapterNav = document.getElementById('chapters'),
+    chapters = [...chapterNav.querySelectorAll('[data-chapter]')],
+    aboutContent = root.querySelector('.about-layout');
+  let chapterIndex = 0,
+    chapterTimer = 0;
+  function markChapter(aboutReached) {
+    // Spring until the trees visibly close in (they arrive late in the zoom),
+    // Forest until halfway down the descent, then Underground until the
+    // introduction's content reaches the middle of the view.
+    const next = aboutReached
+      ? 3
+      : progress < forestChapter
+        ? 0
+        : progress < (1 + forestEnd) / 2
+          ? 1
+          : 2;
+    if (next === chapterIndex) return;
+    chapters[chapterIndex].removeAttribute('aria-current');
+    chapters[next].setAttribute('aria-current', 'step');
+    chapterIndex = next;
+  }
   function scrollProgress() {
     const distance = -journey.getBoundingClientRect().top,
-      split = baseTravel * forestEnd;
+      split = baseTravel * forestEnd,
+      // The section's padding sits above the content, so follow the content.
+      aboutReached = aboutContent.getBoundingClientRect().top < innerHeight / 2;
     render(
       distance <= split
         ? distance / baseTravel
         : forestEnd +
-            (descentAt(distance - split) / descentPixels) * (1 - forestEnd)
+            (pace.at(distance - split) / pace.pixels) * (1 - forestEnd)
     );
+    markChapter(aboutReached);
   }
-  function seek(percent) {
+  function seek(percent, behavior = 'instant') {
     const top = journey.getBoundingClientRect().top + scrollY;
-    scrollTo({
-      top: top + distanceAt(clamp(percent / 100)),
-      behavior: 'instant',
-    });
-    scrollProgress();
+    scrollTo({ top: top + distanceAt(clamp(percent / 100)), behavior });
+    // A smooth scroll reports its own progress through scroll events.
+    if (behavior === 'instant') scrollProgress();
   }
+  // Native smooth scrolling travels through the scene instead of cutting to it.
+  chapters.forEach((button) =>
+    on(button, 'click', () => {
+      const behavior = reducedMotion() ? 'instant' : 'smooth';
+      if (button.dataset.chapter === 'about')
+        aboutContent.scrollIntoView({ behavior });
+      else seek(Number(button.dataset.chapter), behavior);
+    })
+  );
   function refreshStyle() {
     clearTimeout(styleTimer);
     const next =
@@ -514,6 +557,10 @@ export default function initialize(state, on) {
     'scroll',
     () => {
       restHint();
+      // Name the current chapter while moving; hide it again once settled.
+      if (!chapterNav.dataset.scrolling) chapterNav.dataset.scrolling = 'true';
+      clearTimeout(chapterTimer);
+      chapterTimer = setTimeout(() => delete chapterNav.dataset.scrolling, 900);
       if (scrollQueued) return;
       scrollQueued = true;
       requestAnimationFrame(() => {
@@ -523,9 +570,26 @@ export default function initialize(state, on) {
     },
     { passive: true }
   );
+  let paceWidth = innerWidth,
+    paceHeight = innerHeight,
+    paceSceneHeight = scene.clientHeight;
   on(globalThis, 'resize', () => {
     layoutScene();
-    layoutPace();
+    // Mobile browser bars change only the height while scrolling. Re-pacing
+    // then would jump the scene under the finger, so keep the current pace.
+    // The pinned scene is 100svh, which the bars leave alone, so a scene
+    // height change is a real resize.
+    const barsOnly =
+      coarse.matches &&
+      innerWidth === paceWidth &&
+      Math.abs(innerHeight - paceHeight) < 160 &&
+      scene.clientHeight === paceSceneHeight;
+    if (!barsOnly) {
+      paceWidth = innerWidth;
+      paceHeight = innerHeight;
+      paceSceneHeight = scene.clientHeight;
+      layoutPace();
+    }
     naturalWater.resize();
     scrollProgress();
   });
@@ -559,6 +623,7 @@ export default function initialize(state, on) {
     profileId = '';
     ++styleRequest;
     clearTimeout(hintTimer);
+    clearTimeout(chapterTimer);
     clearTimeout(styleTimer);
     clearTimeout(earthTimer);
     observer.disconnect();
@@ -569,11 +634,9 @@ export default function initialize(state, on) {
   layoutPace();
   naturalWater.resize();
   scrollProgress();
-  // Let the scene settle before the first cue; scrolling cancels this timer
-  // and uses the normal 3.2-second rest delay instead.
-  hintTimer = setTimeout(() => {
-    if (initialHint) revealHint();
-  }, 1000);
+  // The cue normally appears once the spring is painted; this covers slow art.
+  // Scrolling cancels it and uses the normal 3.2-second rest delay instead.
+  hintTimer = setTimeout(introduceHint, 1000);
   refreshStyle();
   if (!pendingId) startArtwork();
 }

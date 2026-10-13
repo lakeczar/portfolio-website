@@ -2,7 +2,6 @@ import { render, RenderOptions } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ReactElement } from 'react';
 import { vi } from 'vitest';
-import { TestProviders } from './test-context-wrapper';
 
 // Mock TanStack Router
 vi.mock('@tanstack/react-router', () => ({
@@ -21,15 +20,12 @@ vi.mock('@tanstack/react-router', () => ({
   ),
 }));
 
-// Custom render function with all providers
+// Custom render function; add app-wide providers here when they exist.
 function renderWithProviders(
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'>
 ) {
-  return render(ui, {
-    wrapper: TestProviders,
-    ...options,
-  });
+  return render(ui, options);
 }
 
 // Custom render with user events

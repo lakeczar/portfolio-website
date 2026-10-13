@@ -76,14 +76,20 @@ export default function initialize(state, on) {
       if (phase === 'idle') {
         if (video.ended) video.currentTime = 0;
         phase = 'entering';
+        // Between loops the clip fades in before playing. When the whole cue is
+        // appearing, the clip is already opaque, so start moving immediately.
+        const fading = video.style.opacity === '0';
         video.style.transitionDuration = settings.fadeIn + 's';
         video.style.opacity = '1';
-        later(() => {
-          phase = 'playing';
-          video.play().catch(() => {
-            phase = 'idle';
-          });
-        }, settings.fadeIn * 1000);
+        later(
+          () => {
+            phase = 'playing';
+            video.play().catch(() => {
+              phase = 'idle';
+            });
+          },
+          fading ? settings.fadeIn * 1000 : 0
+        );
       }
     }
     function ended() {
